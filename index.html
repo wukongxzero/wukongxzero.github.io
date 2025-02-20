@@ -1,1 +1,112 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robotics Portfolio | WukongXZero</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: black;
+            color: #0ff;
+            text-align: center;
+        }
+        header {
+            background: linear-gradient(90deg, #111, #222);
+            color: #0ff;
+            padding: 20px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: #0ff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        .scrolling-text {
+            font-size: 2em;
+            text-transform: uppercase;
+            animation: scrollText 10s linear infinite;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        @keyframes scrollText {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+        section {
+            padding: 50px;
+        }
+        .project-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #0ff;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px #0ff;
+        }
+        footer {
+            background: #111;
+            color: #0ff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WukongXZero</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section id="intro">
+        <div class="scrolling-text">A long time ago in a galaxy far, far away... A roboticist embarked on an epic journey!</div>
+    </section>
+    
+    <section id="about">
+        <h2>About Me</h2>
+        <p>Passionate about robotics, control systems, and AI-driven automation. Explore my latest projects below.</p>
+    </section>
+    
+    <section id="projects">
+        <h2>My Robotics Projects</h2>
+        <div class="project-card">
+            <h3>Quadcopter Navigation System</h3>
+            <p>Developed an autonomous drone with precise GPS positioning and obstacle avoidance.</p>
+        </div>
+        <div class="project-card">
+            <h3>Human-Machine Interface for Robots</h3>
+            <p>Designed an intuitive control system for robotic manipulators using real-time feedback.</p>
+        </div>
+    </section>
+    
+    <section id="contact">
+        <h2>Contact</h2>
+        <p>Connect with me on <a href="https://github.com/wukongxzero" style="color: #0ff;">GitHub</a> or <a href="mailto:your-email@example.com" style="color: #0ff;">email me</a>.</p>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 WukongXZero. May the Force be with you.</p>
+    </footer>
+</body>
+</html>
