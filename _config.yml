@@ -1,0 +1,56 @@
+title: "Pavan Kushal Velagaleti"
+description: "Robotics Software Engineer | Real-Time Systems | Surgical Robotics | NYU Tandon"
+url: "https://wukongxzero.github.io"
+baseurl: ""
+remote_theme: "mmistakes/minimal-mistakes"
+minimal_mistakes_skin: "dark"
+show_navigation: true
+sidebar:
+  nav: "main"
+
+
+include:
+  - _pages
+  - _data
+author:
+  name: "Pavan Kushal Velagaleti"
+  avatar: "/assets/images/profile.jpg"
+  bio: >
+    Incoming M.S. Mechatronics & Robotics @ NYU Tandon.
+    Specializing in real-time control systems (DDS, CAN), trajectory planning, and surgical robotics. 
+    Also experienced in CFD research, drone autonomy, AI driving, and SAE BAJA 4WD design.
+  location: "New York City"
+  links:
+    - label: "GitHub"
+      icon: "fab fa-github"
+      url: "https://github.com/wukongxzero"
+    - label: "LinkedIn"
+      icon: "fab fa-linkedin"
+      url: "https://linkedin.com/in/pavan-kushal-velagaleti"
+    - label: "Email"
+      icon: "fas fa-envelope"
+      url: "mailto:pavankushal15729@gmail.com"
+    - label: "Resume"
+      icon: "fas fa-file"
+      url: "/assets/resume/pavan_cv.pdf"
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-include-cache
+navigation:
+  main: main
+
+defaults:
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: single
+      author_profile: true
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
