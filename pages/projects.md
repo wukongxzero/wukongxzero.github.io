@@ -51,5 +51,4 @@ permalink: /projects/
 ### 🏎️ SAE BAJA (2019–2022)
 - Led team "Gas Monkeys Racing" for multiple 2WD/4WD buggy builds.
 - Oversaw vehicle dynamics, drivetrain, and manufacturing.
-- Raised ₹13L in sponsorships and handled logistics/fabrication.
 
