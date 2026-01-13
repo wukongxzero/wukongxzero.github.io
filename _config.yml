@@ -3,10 +3,10 @@
 title: "MESGRO - Robotics & Mechatronics Portfolio"
 description: "An open-source template for showcasing robotics and mechatronics projects with 3D models, schematics, and code"
 url: "https://wukongxzero.github.io"
-baseurl: "/MESGRO"
-author: "Your Name"
+baseurl: ""
+author: "Pavan Kushal velagaleti"
 email: "your.email@example.com"
-github_username: "your-github-username"
+github_username: "wukongxzero"
 linkedin_username: "https://www.linkedin.com/in/pavan-kushal-velagaleti"
 twitter_username: "your-twitter-handle"
 
