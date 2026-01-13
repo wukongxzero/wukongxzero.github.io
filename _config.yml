@@ -1,14 +1,14 @@
 # Site settings
 # IMPORTANT: Update 'url' below with your GitHub username (replace 'your-username' with your actual username)
-title: "MESGRO - Robotics & Mechatronics Portfolio"
-description: "An open-source template for showcasing robotics and mechatronics projects with 3D models, schematics, and code"
+title: "Pavan Kushal Velagaleti | Robotics & Mechatronics"
+description: "Robotics software engineer focused on real-time control, robot communication (CAN/DDS), and manipulation."
 url: "https://wukongxzero.github.io"
 baseurl: ""
-author: "Pavan Kushal velagaleti"
-email: "your.email@example.com"
+author: "Pavan Kushal Velagaleti"
+email: ""
 github_username: "wukongxzero"
-linkedin_username: "https://www.linkedin.com/in/pavan-kushal-velagaleti"
-twitter_username: "your-twitter-handle"
+linkedin_username: "pavan-kushal-velagaleti"   # better to keep just the handle if the theme expects it
+
 
 # Build settings
 markdown: kramdown
