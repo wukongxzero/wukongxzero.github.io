@@ -1,7 +1,6 @@
 ---
 import { projects } from "../../data/projects.js";
 
-// Static site (GitHub Pages) needs this:
 export const prerender = true;
 
 export function getStaticPaths() {
@@ -12,6 +11,7 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
+const fallbackHero = "/projects/_placeholder/hero.jpg";
 ---
 
 <!doctype html>
@@ -20,33 +20,73 @@ const { project } = Astro.props;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{project.title} | Pavan</title>
+  <style>
+    body { margin:0; font-family: system-ui; background:#0b1220; color:#e6edf3; }
+    a { color:#58a6ff; }
+    .wrap { max-width:900px; margin:0 auto; padding:44px 20px; }
+    .panel { border:1px solid #1f2937; border-radius:16px; background:#0f172a; padding:16px; }
+    .muted { opacity:.78; }
+    .tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .tag { font-size:12px; padding:4px 8px; border-radius:999px; background:#111827; border:1px solid #243042; opacity:.92; }
+    h1 { margin:18px 0 8px; letter-spacing:-.02em; }
+    h2 { margin:22px 0 10px; }
+    ul { margin:10px 0 0; padding-left:18px; }
+    li { margin:8px 0; opacity:.95; line-height:1.55; }
+    img { width:100%; border-radius:16px; border:1px solid #1f2937; background:#111827; }
+    .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .pill { padding:8px 12px; border:1px solid #243042; border-radius:999px; background:#0f172a; color:#e6edf3; text-decoration:none; opacity:.92; }
+    .pill:hover { opacity:1; }
+  </style>
 </head>
 
-<body style="font-family: system-ui; margin:0; background:#0b1220; color:#e6edf3;">
-  <main style="max-width:900px; margin:0 auto; padding:48px 20px;">
-    <a href="/projects" style="color:#58a6ff; text-decoration:none;">← Back to projects</a>
+<body>
+  <main class="wrap">
+    <a href="/projects/" style="text-decoration:none;">← Back to Projects</a>
 
-    <h1 style="margin:18px 0 8px 0;">{project.title}</h1>
-    <p style="opacity:.85; margin-top:0;">{project.subtitle}</p>
+    <h1>{project.title}</h1>
+    <div class="muted">{project.subtitle}</div>
 
-    <img src={project.hero} alt={project.title} style="width:100%; border-radius:16px; border:1px solid #1f2937; margin:18px 0;" />
-
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
-      {project.tags.map(t => (
-        <span style="font-size:12px; padding:6px 10px; border-radius:999px; background:#111827; border:1px solid #243042;">{t}</span>
-      ))}
+    <div class="btnrow">
+      <span class="pill">Tier {project.tier}</span>
+      <span class="pill">{project.year}</span>
+      {project.links?.github ? <a class="pill" href={project.links.github} target="_blank">GitHub</a> : null}
+      {project.links?.video ? <a class="pill" href={project.links.video} target="_blank">Video</a> : null}
     </div>
 
-    <h2 style="margin:18px 0 10px 0;">Highlights</h2>
-    <ul>
-      {project.bullets.map(b => <li style="margin:8px 0; opacity:.95;">{b}</li>)}
-    </ul>
+    <div class="tags">
+      {project.tags.map(t => <span class="tag">{t}</span>)}
+    </div>
 
-    <h2 style="margin:26px 0 10px 0;">Links</h2>
-    <ul>
-      <li>GitHub: {project.links.github ? <a href={project.links.github} target="_blank" style="color:#58a6ff;">Open</a> : <span style="opacity:.7;">(add later)</span>}</li>
-      <li>Video: {project.links.video ? <a href={project.links.video} target="_blank" style="color:#58a6ff;">Watch</a> : <span style="opacity:.7;">(add later)</span>}</li>
-    </ul>
+    <div style="margin-top:18px;">
+      <img src={project.hero} alt={project.title} onerror={`this.src='${fallbackHero}'`} />
+      <div class="muted" style="margin-top:8px; font-size:13px;">
+        Add images later under <code>public/projects/{project.slug}/</code> and update <code>hero</code> in <code>projects.js</code>.
+      </div>
+    </div>
+
+    <h2>Problem</h2>
+    <div class="panel">{project.problem}</div>
+
+    <h2>Approach</h2>
+    <div class="panel">
+      <ul>
+        {project.approach.map(a => <li>{a}</li>)}
+      </ul>
+    </div>
+
+    <h2>Results</h2>
+    <div class="panel">
+      <ul>
+        {project.results.map(r => <li>{r}</li>)}
+      </ul>
+    </div>
+
+    <h2>Highlights</h2>
+    <div class="panel">
+      <ul>
+        {(project.bullets || []).map(b => <li>{b}</li>)}
+      </ul>
+    </div>
   </main>
 </body>
 </html>
