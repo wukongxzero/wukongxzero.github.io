@@ -1,5 +1,10 @@
 ---
 import { projects } from "../../data/projects.js";
+
+const tier1 = projects.filter(p => p?.tier === 1);
+const tier2 = projects.filter(p => p?.tier === 2);
+const tier3 = projects.filter(p => p?.tier === 3);
+
 const fallbackHero = "/projects/_placeholder/hero.jpg";
 ---
 
@@ -10,39 +15,82 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects | Pavan</title>
   <style>
-    body { margin:0; font-family: system-ui; background:#0b1220; color:#e6edf3; }
-    a { color:#58a6ff; }
-    .wrap { max-width:1100px; margin:0 auto; padding:44px 20px; }
+    body { margin:0; font-family:system-ui; background:#0b1220; color:#e6edf3; }
+    a { color:inherit; text-decoration:none; }
+    .wrap { max-width:1100px; margin:0 auto; padding:40px 20px; }
+    .top { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; }
+    .pill { padding:8px 12px; border:1px solid #243042; border-radius:999px; background:#0f172a; color:#e6edf3; opacity:.92; }
+    .pill:hover { opacity:1; border-color:#58a6ff; }
+    .muted { opacity:.75; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:14px; }
-    .card { border:1px solid #1f2937; background:#0f172a; border-radius:16px; overflow:hidden; text-decoration:none; color:inherit; }
+    .card { border:1px solid #1f2937; background:#0f172a; border-radius:16px; overflow:hidden; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+    .card:hover { transform:translateY(-6px); border-color:rgba(88,166,255,.6); box-shadow:0 18px 40px rgba(0,0,0,.4); }
     .card img { width:100%; height:170px; object-fit:cover; display:block; background:#111827; }
     .pad { padding:14px; }
     .tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .tag { font-size:12px; padding:4px 8px; border-radius:999px; background:#111827; border:1px solid #243042; opacity:.92; }
-    .muted { opacity:.75; }
+    .tag { font-size:12px; padding:4px 8px; border-radius:999px; background:#111827; border:1px solid #243042; opacity:.9; }
+    h1 { margin:0; }
+    h2 { margin:24px 0 8px; font-size:18px; }
   </style>
 </head>
-<body>
-  <main class="wrap">
-    <a href="/" style="text-decoration:none;">← Home</a>
-    <h1 style="margin:18px 0 8px;">Projects</h1>
-    <p class="muted" style="margin:0;">Click any project to see the “Problem → Approach → Results” story.</p>
 
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>Projects</h1>
+        <div class="muted">Click a project to open the full story.</div>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="pill" href="/">← Home</a>
+        <a class="pill" href="https://github.com/wukongxzero" target="_blank">GitHub</a>
+      </div>
+    </div>
+
+    <h2>Tier 1 — strongest proof</h2>
     <div class="grid">
-      {projects.map(p => (
+      {tier1.map(p => (
         <a class="card" href={`/projects/${p.slug}/`}>
-          <img src={p.hero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
+          <img src={p.hero || fallbackHero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
           <div class="pad">
             <div style="display:flex; justify-content:space-between; gap:10px;">
-              <div style="font-weight:800;">{p.title}</div>
-              <div class="muted" style="font-size:12px;">Tier {p.tier}</div>
+              <b>{p.title}</b>
+              <span class="muted" style="font-size:12px;">{p.year}</span>
             </div>
-            <div class="muted" style="margin-top:6px; font-size:14px;">{p.subtitle}</div>
-            <div class="tags">{p.tags.map(t => <span class="tag">{t}</span>)}</div>
+            <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
+            <div class="tags">{(p.tags || []).map(t => <span class="tag">{t}</span>)}</div>
           </div>
         </a>
       ))}
     </div>
-  </main>
+
+    <h2>Tier 2 — solid builds</h2>
+    <div class="grid">
+      {tier2.map(p => (
+        <a class="card" href={`/projects/${p.slug}/`}>
+          <img src={p.hero || fallbackHero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
+          <div class="pad">
+            <b>{p.title}</b>
+            <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
+            <div class="tags">{(p.tags || []).map(t => <span class="tag">{t}</span>)}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <h2>Tier 3 — research / WIP</h2>
+    <div class="grid">
+      {tier3.map(p => (
+        <a class="card" href={`/projects/${p.slug}/`}>
+          <img src={p.hero || fallbackHero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
+          <div class="pad">
+            <b>{p.title}</b>
+            <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
+            <div class="tags">{(p.tags || []).map(t => <span class="tag">{t}</span>)}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
 </body>
 </html>

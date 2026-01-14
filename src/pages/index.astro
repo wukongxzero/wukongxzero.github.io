@@ -14,37 +14,175 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pavan Kushal Velagaleti | Robotics</title>
+
   <style>
     html { scroll-behavior: smooth; }
-    body { margin:0; font-family: system-ui; background:#0b1220; color:#e6edf3; }
-    a { color:#58a6ff; }
-    nav { position:sticky; top:0; z-index:50; background:rgba(11,18,32,.75); backdrop-filter: blur(10px); border-bottom:1px solid #1f2937; }
-    .bar { max-width:1100px; margin:0 auto; padding:14px 20px; display:flex; gap:10px; align-items:center; }
-    .pill { padding:8px 12px; border:1px solid #243042; border-radius:999px; background:#0f172a; color:#e6edf3; text-decoration:none; opacity:.92; }
-    .pill:hover { opacity:1; }
+    body {
+      margin:0;
+      font-family: system-ui;
+      background:#0b1220;
+      color:#e6edf3;
+    }
+    a { color:#58a6ff; text-decoration:none; }
+
+    /* NAV */
+    nav {
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:rgba(11,18,32,.75);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid #1f2937;
+    }
+    .bar {
+      max-width:1100px;
+      margin:0 auto;
+      padding:14px 20px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .pill {
+      padding:8px 12px;
+      border:1px solid #243042;
+      border-radius:999px;
+      background:#0f172a;
+      color:#e6edf3;
+      opacity:.9;
+      transition: opacity .15s ease, border-color .15s ease;
+    }
+    .pill:hover {
+      opacity:1;
+      border-color:#58a6ff;
+    }
+
+    /* LAYOUT */
     .wrap { max-width:1100px; margin:0 auto; padding:44px 20px; }
-    .hero { display:grid; grid-template-columns: 1.2fr .8fr; gap:18px; align-items:center; }
-    @media (max-width:900px){ .hero{grid-template-columns:1fr;} }
-    h1 { font-size:44px; margin:0 0 10px 0; letter-spacing:-.02em; }
-    .sub { opacity:.8; max-width:820px; line-height:1.6; }
-    section { padding-top:80px; margin-top:-80px; }
-    .title { font-size:26px; margin:26px 0 8px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:14px; }
-    .card { border:1px solid #1f2937; background:#0f172a; border-radius:16px; overflow:hidden; text-decoration:none; color:inherit; }
-    .card img { width:100%; height:170px; object-fit:cover; display:block; background:#111827; }
-    .pad { padding:14px; }
-    .tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .tag { font-size:12px; padding:4px 8px; border-radius:999px; background:#111827; border:1px solid #243042; opacity:.92; }
-    .panel { border:1px solid #1f2937; border-radius:16px; background:#0f172a; padding:14px; }
+    .hero {
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:20px;
+      align-items:center;
+    }
+    @media (max-width:900px){
+      .hero{ grid-template-columns:1fr; }
+    }
+
+    h1 {
+      font-size:44px;
+      margin:0 0 10px 0;
+      letter-spacing:-.02em;
+    }
+    .sub {
+      opacity:.8;
+      max-width:820px;
+      line-height:1.6;
+    }
+
+    section {
+      padding-top:90px;
+      margin-top:-90px;
+    }
+    .title {
+      font-size:26px;
+      margin:26px 0 8px;
+    }
+
+    /* PANELS */
+    .panel {
+      border:1px solid #1f2937;
+      border-radius:16px;
+      background:#0f172a;
+      padding:14px;
+    }
     .muted { opacity:.75; }
-    .skills { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-top:14px; }
+
+    /* GRID */
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:16px;
+      margin-top:14px;
+    }
+
+    /* CARD (INTERACTIVE) */
+    .card {
+      border:1px solid #1f2937;
+      background:#0f172a;
+      border-radius:16px;
+      overflow:hidden;
+      color:inherit;
+
+      transform: translateY(0);
+      transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(88,166,255,.6);
+      box-shadow: 0 18px 40px rgba(0,0,0,.4);
+    }
+
+    .card img {
+      width:100%;
+      height:170px;
+      object-fit:cover;
+      display:block;
+      background:#111827;
+    }
+
+    .pad { padding:14px; }
+
+    /* TAGS */
+    .tags {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .tag {
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#111827;
+      border:1px solid #243042;
+      opacity:.85;
+      transform: translateY(3px);
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    .card:hover .tag {
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* SKILLS */
+    .skills {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:14px;
+      margin-top:14px;
+    }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity:0;
+      transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.show {
+      opacity:1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 
 <body>
+  <!-- NAV -->
   <nav>
     <div class="bar">
-      <strong style="margin-right:6px;">Pavan</strong>
+      <strong>Pavan</strong>
       <a class="pill" href="#projects">Projects</a>
       <a class="pill" href="#skills">Tools & Skills</a>
       <a class="pill" href="#about">About</a>
@@ -56,15 +194,20 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
     </div>
   </nav>
 
-  <div class="wrap hero">
+  <!-- HERO -->
+  <div class="wrap hero reveal">
     <div>
       <h1>Pavan Kushal Velagaleti</h1>
-      <p class="sub">Robotics & Mechatronics — real-time control, embedded systems, simulation, and autonomy.</p>
+      <p class="sub">
+        Robotics & Mechatronics — real-time control, embedded systems,
+        simulation, and autonomy.
+      </p>
 
       <div class="panel" style="margin-top:14px;">
-        <div style="font-weight:750;">What I’m looking for</div>
-        <div class="muted" style="margin-top:6px; line-height:1.6;">
-          Robotics Software Intern / New Grad — real-time control, robotic systems, simulation, autonomy.
+        <strong>What I’m looking for</strong>
+        <div class="muted" style="margin-top:6px;">
+          Robotics Software Intern / New Grad — real-time control,
+          robotic systems, simulation, autonomy.
         </div>
       </div>
 
@@ -76,69 +219,64 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
     </div>
 
     <div class="panel">
-      <div style="font-weight:750; margin-bottom:10px;">Profile</div>
+      <strong>Profile</strong>
       <img
         src="/profile.jpg"
         alt="Pavan"
-        style="width:100%; border-radius:14px; border:1px solid #1f2937; background:#111827;"
+        style="width:100%; border-radius:14px; margin-top:10px; border:1px solid #1f2937;"
         onerror={`this.src='${fallbackHero}'`}
       />
-      <div class="muted" style="margin-top:10px; font-size:14px;">
-        Add <code>public/profile.jpg</code> later. Placeholder is fine for now.
+      <div class="muted" style="margin-top:8px; font-size:14px;">
+        Add <code>public/profile.jpg</code> later
       </div>
     </div>
   </div>
 
+  <!-- PROJECTS -->
   <div class="wrap">
     <section id="projects">
       <div class="title">Projects</div>
-      <p class="sub">Tiered by impact. Click any card for the “Problem → Approach → Results” story.</p>
+      <p class="sub">Tiered by impact. Click any card for the engineering story.</p>
 
-      <div style="margin-top:14px; font-weight:800;">Tier 1 — strongest proof</div>
+      <strong>Tier 1 — strongest proof</strong>
       <div class="grid">
         {tier1.map(p => (
-          <a class="card" href={`/projects/${p.slug}/`}>
-            <img src={p.hero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
+          <a class="card reveal" href={`/projects/${p.slug}/`}>
+            <img src={p.hero} onerror={`this.src='${fallbackHero}'`} />
             <div class="pad">
-              <div style="display:flex; justify-content:space-between; gap:10px;">
-                <div style="font-weight:800;">{p.title}</div>
-                <div class="muted" style="font-size:12px;">{p.year}</div>
+              <div style="display:flex; justify-content:space-between;">
+                <strong>{p.title}</strong>
+                <span class="muted" style="font-size:12px;">{p.year}</span>
               </div>
-              <div class="muted" style="margin-top:6px; font-size:14px;">{p.subtitle}</div>
+              <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
               <div class="tags">{p.tags.map(t => <span class="tag">{t}</span>)}</div>
             </div>
           </a>
         ))}
       </div>
 
-      <div style="margin-top:22px; font-weight:800;">Tier 2 — solid builds</div>
+      <strong style="margin-top:26px; display:block;">Tier 2 — solid builds</strong>
       <div class="grid">
         {tier2.map(p => (
-          <a class="card" href={`/projects/${p.slug}/`}>
-            <img src={p.hero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
+          <a class="card reveal" href={`/projects/${p.slug}/`}>
+            <img src={p.hero} onerror={`this.src='${fallbackHero}'`} />
             <div class="pad">
-              <div style="display:flex; justify-content:space-between; gap:10px;">
-                <div style="font-weight:800;">{p.title}</div>
-                <div class="muted" style="font-size:12px;">{p.year}</div>
-              </div>
-              <div class="muted" style="margin-top:6px; font-size:14px;">{p.subtitle}</div>
+              <strong>{p.title}</strong>
+              <div class="muted">{p.subtitle}</div>
               <div class="tags">{p.tags.map(t => <span class="tag">{t}</span>)}</div>
             </div>
           </a>
         ))}
       </div>
 
-      <div style="margin-top:22px; font-weight:800;">Tier 3 — research / WIP</div>
+      <strong style="margin-top:26px; display:block;">Tier 3 — research / WIP</strong>
       <div class="grid">
         {tier3.map(p => (
-          <a class="card" href={`/projects/${p.slug}/`}>
-            <img src={p.hero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
+          <a class="card reveal" href={`/projects/${p.slug}/`}>
+            <img src={p.hero} onerror={`this.src='${fallbackHero}'`} />
             <div class="pad">
-              <div style="display:flex; justify-content:space-between; gap:10px;">
-                <div style="font-weight:800;">{p.title}</div>
-                <div class="muted" style="font-size:12px;">{p.year}</div>
-              </div>
-              <div class="muted" style="margin-top:6px; font-size:14px;">{p.subtitle}</div>
+              <strong>{p.title}</strong>
+              <div class="muted">{p.subtitle}</div>
               <div class="tags">{p.tags.map(t => <span class="tag">{t}</span>)}</div>
             </div>
           </a>
@@ -146,69 +284,46 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
       </div>
     </section>
 
+    <!-- SKILLS -->
     <section id="skills">
       <div class="title">Tools & Skills</div>
-      <p class="sub">Only the tools I can back up with projects.</p>
-
       <div class="skills">
-        <div class="panel">
-          <div style="font-weight:800;">Control</div>
-          <ul style="margin:10px 0 0; padding-left:18px;">
-            <li>PID/PD, tracking, tuning tradeoffs</li>
-            <li>Task-space / joint-space thinking</li>
-            <li>Stability-minded debugging</li>
-          </ul>
-        </div>
-
-        <div class="panel">
-          <div style="font-weight:800;">Robotics Software</div>
-          <ul style="margin:10px 0 0; padding-left:18px;">
-            <li>C++ / Python</li>
-            <li>System integration mindset</li>
-            <li>Simulation-first development</li>
-          </ul>
-        </div>
-
-        <div class="panel">
-          <div style="font-weight:800;">Embedded / Systems</div>
-          <ul style="margin:10px 0 0; padding-left:18px;">
-            <li>Sensor → controller → actuator pipelines</li>
-            <li>CAN/DDS concepts, serial integration</li>
-            <li>Reliability + debugging tooling</li>
-          </ul>
-        </div>
-
-        <div class="panel">
-          <div style="font-weight:800;">Simulation</div>
-          <ul style="margin:10px 0 0; padding-left:18px;">
-            <li>MuJoCo environments + controllers</li>
-            <li>Evaluation scripts + repeatability</li>
-            <li>Failure modes + tuning workflows</li>
-          </ul>
-        </div>
+        <div class="panel reveal"><strong>Control</strong><ul><li>PID / PD</li><li>Tracking & tuning</li></ul></div>
+        <div class="panel reveal"><strong>Robotics Software</strong><ul><li>C++ / Python</li><li>Simulation-first</li></ul></div>
+        <div class="panel reveal"><strong>Embedded</strong><ul><li>CAN / DDS concepts</li><li>Debug pipelines</li></ul></div>
+        <div class="panel reveal"><strong>Simulation</strong><ul><li>MuJoCo</li><li>Evaluation tooling</li></ul></div>
       </div>
     </section>
 
+    <!-- ABOUT -->
     <section id="about">
       <div class="title">About</div>
-      <p class="sub">
-        I’m building toward a career where I ship robotic systems end-to-end — control + embedded + simulation + integration.
-        I care about reliability, real-time behavior, and explaining engineering tradeoffs clearly.
+      <p class="sub reveal">
+        I build robotic systems end-to-end with a focus on reliability,
+        real-time behavior, and clear engineering tradeoffs.
       </p>
-      <p class="sub muted">Goal: get hired as an intuitive roboticist by showing real proof of work.</p>
     </section>
 
+    <!-- CONTACT -->
     <section id="contact">
       <div class="title">Contact</div>
-      <div class="panel">
-        <div class="muted">Replace these with your real links:</div>
-        <div style="margin-top:10px; line-height:1.8;">
-          <div>Email: <b>ADD_EMAIL_HERE</b></div>
-          <div>GitHub: <a href="https://github.com/wukongxzero" target="_blank">github.com/wukongxzero</a></div>
-          <div>LinkedIn: <a href="https://www.linkedin.com/" target="_blank">linkedin.com/in/...</a></div>
-        </div>
+      <div class="panel reveal">
+        Email: <b>ADD_EMAIL_HERE</b><br />
+        GitHub: <a href="https://github.com/wukongxzero">github.com/wukongxzero</a><br />
+        LinkedIn: <a href="https://www.linkedin.com/">linkedin.com/in/...</a>
       </div>
     </section>
   </div>
+
+  <!-- SCROLL REVEAL SCRIPT -->
+  <script>
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('show');
+      });
+    }, { threshold: 0.12 });
+    els.forEach(el => io.observe(el));
+  </script>
 </body>
 </html>
