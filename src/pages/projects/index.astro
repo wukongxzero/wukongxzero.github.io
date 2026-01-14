@@ -1,4 +1,5 @@
 ---
+import { projects } from "../../data/projects.js";
 ---
 
 <!doctype html>
@@ -6,21 +7,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pavan Kushal Velagaleti | Robotics</title>
+  <title>Projects | Pavan</title>
 </head>
 
-<body style="font-family: system-ui; margin:0; background:#0b1220; color:#e6edf3;">
-  <main style="max-width:1100px; margin:0 auto; padding:72px 20px;">
-    <h1 style="font-size:48px; margin:0;">Pavan Kushal Velagaleti</h1>
-    <p style="opacity:.85; font-size:18px; margin-top:10px;">
-      Robotics & Mechatronics — real-time control, embedded systems, simulation, and autonomy.
-    </p>
+<body style="font-family:system-ui; margin:0; background:#0b1220; color:#e6edf3;">
+  <main style="max-width:900px; margin:0 auto; padding:48px 20px;">
+    <a href="/" style="color:#58a6ff; text-decoration:none;">← Home</a>
+    <h1 style="margin:18px 0 10px 0;">Projects</h1>
+    <p style="opacity:.8;">Click a project to open its detail page.</p>
 
-    <div style="margin-top:18px; display:flex; gap:12px; flex-wrap:wrap;">
-      <a href="/projects" style="padding:10px 14px; background:#1f6feb; color:white; border-radius:10px; text-decoration:none;">Projects</a>
-      <a href="https://github.com/wukongxzero" target="_blank" style="padding:10px 14px; background:#21262d; color:white; border-radius:10px; text-decoration:none;">GitHub</a>
-      <a href="https://www.linkedin.com/" target="_blank" style="padding:10px 14px; background:#21262d; color:white; border-radius:10px; text-decoration:none;">LinkedIn</a>
-    </div>
+    <ul style="padding-left:18px;">
+      {projects.map(p => (
+        <li style="margin:10px 0;">
+          <a href={`/projects/${p.slug}/`} style="color:#58a6ff; text-decoration:none;">
+            {p.title}
+          </a>
+          <span style="opacity:.7;"> — {p.subtitle}</span>
+        </li>
+      ))}
+    </ul>
   </main>
 </body>
 </html>
