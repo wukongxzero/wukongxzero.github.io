@@ -1,29 +1,59 @@
 export const projects = [
   {
-    slug: "articulus-surgical-robotics",
-    title: "Articulus Surgical Robotics",
-    subtitle: "Real-time control + low-latency communication for minimally invasive systems",
-    year: "2023–2024",
-    tier: 1,
-    tags: ["C++", "Real-time", "Control", "Systems", "Robotics"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
-    problem: "Build deterministic control + comms for a surgical robotics platform under tight latency and safety constraints.",
-    approach: [
-      "Designed a control/communication pipeline across distributed components",
-      "Built tooling for monitoring, debugging and system validation",
-      "Validated behaviors through simulation + repeatable test procedures",
-    ],
-    results: [
-      "Reliable demos with predictable behavior and fast iteration/debug cycles",
-      "Improved observability of robot state and faults via tooling",
-    ],
-    bullets: [
-      "Real-time control & communication pipeline across robotic subsystems",
-      "Low-latency monitoring + debugging tooling for demos and validation",
-      "Simulation-first checks for safety behavior and trajectory sanity",
-    ],
-  },
+  slug: "articulus-surgical-robotics",
+  title: "Articulus Surgical Robotics",
+  subtitle: "Real-time control, teleoperation, and safety-aware motion for surgical robotic systems",
+  year: "2023–2025",
+  tier: 1,
+  tags: [
+    "C++",
+    "Real-time",
+    "Control",
+    "Systems",
+    "Surgical Robotics",
+    "DDS",
+    "Teleoperation"
+  ],
+
+  hero: "/projects/articulus/galaxi/system.png",
+
+  links: { github: "", video: "" },
+
+  problem:
+    "Architect deterministic real-time control and communication pipelines for a 7-axis surgical robotic platform, supporting tool-frame orientation and insertion control (RPY + linear tool-axis motion), dynamic instrument swaps, teleoperated micro/macro motion, and safety-aware behavior aligned with applicable ISO standards.",
+
+  approach: [
+    "Architected and implemented the core real-time software pipeline spanning encoder feedback ingestion, synchronized control and planning loops, and deterministic actuator command execution",
+    "Designed multithreaded real-time execution models with explicit scheduling and timing guarantees for control, communication, and monitoring tasks",
+    "Integrated DDS-based communication for low-latency, reliable data exchange between distributed robotic components",
+    "Implemented safety and constraint handling (hard limits, soft limits, saturation, fault responses) informed by applicable ISO and medical robotics safety standards",
+    "Designed coordinated motion strategies supporting micro- and macro-scale movements across a 7-axis robotic system",
+    "Implemented tool-frame motion control supporting roll, pitch, yaw orientation and linear insertion along the tool axis",
+    "Integrated kinematics (FK/IK) into teleoperation, instrument tracking, and trajectory execution workflows",
+    "Designed and tuned PID-based joint controllers for stable tracking under real hardware constraints",
+    "Integrated instrument tracking into the real-time control pipeline for tool-aware motion, safety enforcement, and operator feedback",
+    "Designed tool lifecycle handling for dynamic instrument attachment and swap events, including tool identification, frame updates, safety re-initialization, and control pipeline reconfiguration",
+    "Developed observability tooling including high-frequency data logging and IMGUI-based dashboards for bring-up, debugging, and validation"
+  ],
+
+  results: [
+    "Predictable, deterministic system behavior during demos and validation",
+    "Safe handling of dynamic tool swaps without loss of control or teleoperation continuity",
+    "Improved bring-up and debug cycles through integrated logging and visualization tools",
+    "Reduced hardware risk through simulation-first validation and staged deployment"
+  ],
+
+  bullets: [
+    "End-to-end ownership of real-time control, communication, and safety-aware motion pipelines for surgical robotics",
+    "7-axis coordinated motion with micro/macro motion decomposition under teleoperation",
+    "Tool-frame motion control supporting RPY orientation and linear tool-axis insertion",
+    "Dynamic instrument tracking and tool swap handling with safe pipeline re-initialization",
+    "Deterministic multithreaded execution with explicit real-time scheduling guarantees",
+    "DDS-based low-latency communication across distributed robotic subsystems",
+    "Standards-aware development aligned with applicable ISO safety requirements"
+  ],
+},
+
 
   {
     slug: "sae-baja",
