@@ -15,6 +15,13 @@ const { project } = Astro.props;
 // Gallery helpers (for the 3 side-by-side diagrams)
 const diagrams = (project.gallery || []).filter((g) => g.group === "articulus-diagrams");
 const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus-diagrams");
+
+// Flatten all images for lightbox navigation
+const allImages = (project.gallery || []).map((g) => ({
+  src: g.src,
+  title: g.title || project.title,
+  caption: g.caption || "",
+}));
 ---
 
 <!doctype html>
@@ -63,11 +70,12 @@ const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus
     }
     .card img {
       width: 100%;
-      height: 360px;          /* makes them align nicely */
-      object-fit: contain;    /* prevents cropping */
+      height: 360px;
+      object-fit: contain;
       border-radius: 14px;
       border: 1px solid #1f2937;
       background: #111827;
+      cursor: zoom-in;
     }
     .caption {
       margin-top: 10px;
@@ -77,9 +85,103 @@ const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus
     }
 
     .stack { display:flex; flex-direction:column; gap:14px; }
-    .stack img { width:100%; border-radius:16px; border:1px solid #1f2937; background:#111827; }
+    .stack img {
+      width:100%;
+      border-radius:16px;
+      border:1px solid #1f2937;
+      background:#111827;
+      cursor: zoom-in;
+    }
     .imgtitle { margin-top:8px; font-size:13px; opacity:.86; }
     .imgcap { margin-top:4px; font-size:13px; opacity:.72; line-height:1.45; }
+
+    /* Lightbox */
+    .lb {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .lb.open { display: flex; }
+    .lb-inner {
+      width: min(1100px, 96vw);
+      max-height: 92vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+    }
+    .lb-top {
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      color:#e6edf3;
+      opacity:.95;
+    }
+    .lb-title { font-size: 14px; opacity:.9; }
+    .lb-actions { display:flex; gap: 8px; }
+    .lb-btn {
+      border:1px solid #243042;
+      background:#0f172a;
+      color:#e6edf3;
+      border-radius:999px;
+      padding:8px 12px;
+      cursor:pointer;
+      opacity:.92;
+      user-select:none;
+    }
+    .lb-btn:hover { opacity:1; }
+    .lb-imgwrap {
+      border:1px solid #1f2937;
+      border-radius:16px;
+      background:#0f172a;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .lb-img {
+      max-width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      display:block;
+    }
+    .lb-cap {
+      font-size: 13px;
+      opacity:.78;
+      line-height:1.45;
+    }
+    .lb-nav {
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+    .lb-navbtn {
+      pointer-events:auto;
+      position:absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border:1px solid #243042;
+      background: rgba(15, 23, 42, .85);
+      color:#e6edf3;
+      cursor:pointer;
+      opacity:.92;
+    }
+    .lb-navbtn:hover { opacity:1; }
+    .lb-prev { left: 22px; }
+    .lb-next { right: 22px; }
+    @media (max-width: 700px) {
+      .lb-prev { left: 10px; }
+      .lb-next { right: 10px; }
+      .lb-navbtn { width: 40px; height: 40px; }
+    }
   </style>
 </head>
 
@@ -101,7 +203,7 @@ const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus
       {project.tags.map(t => <span class="tag">{t}</span>)}
     </div>
 
-    <!-- ✅ NO HERO IMAGE ON PROJECT PAGE -->
+    <!-- No hero image on detail page -->
 
     <h2>Problem</h2>
     <div class="panel">{project.problem}</div>
@@ -113,7 +215,14 @@ const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus
           {diagrams.map((d) => (
             <div class="card">
               <h3>{d.title}</h3>
-              <img src={d.src} alt={d.title} loading="lazy" />
+              <img
+                src={d.src}
+                alt={d.title}
+                loading="lazy"
+                data-lb-src={d.src}
+                data-lb-title={d.title}
+                data-lb-caption={d.caption || ""}
+              />
               {d.caption ? <div class="caption">{d.caption}</div> : null}
             </div>
           ))}
@@ -148,7 +257,14 @@ const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus
         <div class="panel stack">
           {restGallery.map((g) => (
             <div>
-              <img src={g.src} alt={g.title || project.title} loading="lazy" />
+              <img
+                src={g.src}
+                alt={g.title || project.title}
+                loading="lazy"
+                data-lb-src={g.src}
+                data-lb-title={g.title || project.title}
+                data-lb-caption={g.caption || ""}
+              />
               {g.title ? <div class="imgtitle">{g.title}</div> : null}
               {g.caption ? <div class="imgcap">{g.caption}</div> : null}
             </div>
@@ -157,5 +273,97 @@ const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus
       </>
     ) : null}
   </main>
+
+  <!-- Lightbox Overlay -->
+  <div class="lb" id="lb" aria-hidden="true">
+    <div class="lb-inner" role="dialog" aria-modal="true" aria-label="Image viewer">
+      <div class="lb-top">
+        <div class="lb-title" id="lbTitle"></div>
+        <div class="lb-actions">
+          <button class="lb-btn" id="lbDownload" type="button">Open</button>
+          <button class="lb-btn" id="lbClose" type="button">Close</button>
+        </div>
+      </div>
+
+      <div class="lb-imgwrap">
+        <img class="lb-img" id="lbImg" alt="" />
+        <div class="lb-nav">
+          <button class="lb-navbtn lb-prev" id="lbPrev" type="button">←</button>
+          <button class="lb-navbtn lb-next" id="lbNext" type="button">→</button>
+        </div>
+      </div>
+
+      <div class="lb-cap" id="lbCap"></div>
+    </div>
+  </div>
+
+  <script>
+    // Build image list from the data injected by Astro
+    const IMAGES = JSON.parse(
+      decodeURIComponent("{encodeURIComponent(JSON.stringify(allImages))}")
+    );
+
+    const lb = document.getElementById("lb");
+    const lbImg = document.getElementById("lbImg");
+    const lbTitle = document.getElementById("lbTitle");
+    const lbCap = document.getElementById("lbCap");
+    const lbClose = document.getElementById("lbClose");
+    const lbPrev = document.getElementById("lbPrev");
+    const lbNext = document.getElementById("lbNext");
+    const lbDownload = document.getElementById("lbDownload");
+
+    let idx = 0;
+
+    function openAt(i) {
+      idx = (i + IMAGES.length) % IMAGES.length;
+      const item = IMAGES[idx];
+      lb.classList.add("open");
+      lb.setAttribute("aria-hidden", "false");
+      lbImg.src = item.src;
+      lbImg.alt = item.title || "Image";
+      lbTitle.textContent = item.title || "";
+      lbCap.textContent = item.caption || "";
+      lbDownload.onclick = () => window.open(item.src, "_blank");
+    }
+
+    function closeLb() {
+      lb.classList.remove("open");
+      lb.setAttribute("aria-hidden", "true");
+      lbImg.src = "";
+    }
+
+    function next() { openAt(idx + 1); }
+    function prev() { openAt(idx - 1); }
+
+    // Map src -> index
+    const srcToIndex = new Map(IMAGES.map((it, i) => [it.src, i]));
+
+    // Click handler for any image that has data-lb-src
+    document.addEventListener("click", (e) => {
+      const t = e.target;
+      if (t && t.matches && t.matches("img[data-lb-src]")) {
+        const src = t.getAttribute("data-lb-src");
+        const i = srcToIndex.has(src) ? srcToIndex.get(src) : 0;
+        openAt(i);
+      }
+    });
+
+    // Close when clicking outside the dialog content
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb) closeLb();
+    });
+
+    lbClose.addEventListener("click", closeLb);
+    lbNext.addEventListener("click", next);
+    lbPrev.addEventListener("click", prev);
+
+    // Keyboard support
+    document.addEventListener("keydown", (e) => {
+      if (!lb.classList.contains("open")) return;
+      if (e.key === "Escape") closeLb();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    });
+  </script>
 </body>
 </html>
