@@ -1,59 +1,96 @@
 export const projects = [
-  {
-  slug: "articulus-surgical-robotics",
-  title: "Articulus Surgical Robotics",
-  subtitle: "Real-time control, teleoperation, and safety-aware motion for surgical robotic systems",
-  year: "2023–2025",
-  tier: 1,
-  tags: [
-    "C++",
-    "Real-time",
-    "Control",
-    "Systems",
-    "Surgical Robotics",
-    "DDS",
-    "Teleoperation"
-  ],
+   {
+    slug: "articulus-surgical-robotics",
+    title: "Articulus Surgical Robotics",
+    subtitle:
+      "Real-time control, teleoperation, and safety-aware motion for surgical robotic systems",
+    year: "2023–2025",
+    tier: 1,
+    tags: [
+      "C++",
+      "Real-time",
+      "Control",
+      "Systems",
+      "Surgical Robotics",
+      "DDS",
+      "Teleoperation",
+    ],
 
-  hero: "/projects/articulus/SoftwareArchitecture.jpg",
+    // Used by cards / lists (project detail page no longer shows hero)
+    hero: "/projects/articulus/Articulus.jpg",
 
-  links: { github: "", video: "" },
+    links: { github: "", video: "" },
 
-  problem:
-    "Architect deterministic real-time control and communication pipelines for a multi-DOF surgical robotic manipulators platform, supporting tool-frame orientation and insertion control (RPY + linear tool-axis motion), dynamic instrument swaps, teleoperated micro/macro motion, and safety-aware behavior aligned with applicable ISO standards.",
+    problem:
+      "Architect deterministic real-time control and communication pipelines for a multi-DOF surgical robotics platform, supporting tool-frame orientation and insertion control (RPY + linear tool-axis motion), dynamic instrument swaps, teleoperated micro/macro motion, and safety-aware behavior aligned with applicable ISO standards.",
 
-  approach: [
-    "Architected and implemented the core real-time software pipeline spanning encoder feedback ingestion, synchronized control and planning loops, and deterministic actuator command execution",
-    "Designed multithreaded real-time execution models with explicit scheduling and timing guarantees for control, communication, and monitoring tasks",
-    "Integrated DDS-based communication for low-latency, reliable data exchange between distributed robotic components",
-    "Implemented safety and constraint handling (hard limits, soft limits, saturation, fault responses) informed by applicable ISO and medical robotics safety standards",
-    "Designed coordinated motion strategies supporting micro- and macro-scale movements across a 7-axis robotic system",
-    "Implemented tool-frame motion control supporting roll, pitch, yaw orientation and linear insertion along the tool axis",
-    "Integrated kinematics (FK/IK) into teleoperation, instrument tracking, and trajectory execution workflows",
-    "Designed and tuned PID-based joint controllers for stable tracking under real hardware constraints",
-    "Integrated instrument tracking into the real-time control pipeline for tool-aware motion, safety enforcement, and operator feedback",
-    "Designed tool lifecycle handling for dynamic instrument attachment and swap events, including tool identification, frame updates, safety re-initialization, and control pipeline reconfiguration",
-    "Developed observability tooling including high-frequency data logging and IMGUI-based dashboards for bring-up, debugging, and validation"
-  ],
+    gallery: [
+      {
+        title: "Tool-Frame Motion & Orientation",
+        src: "/projects/articulus/tool-frame.png",
+        caption:
+          "Representative tool-frame control: Roll/Pitch/Yaw orientation control and linear insertion along the tool axis.",
+        group: "articulus-diagrams",
+      },
+      {
+        title: "Tool Swap / Instrument Lifecycle",
+        src: "/projects/articulus/tool-swap.png",
+        caption:
+          "State flow for tool attach/identify, parameter load, limit updates, and safely re-enabling control after a swap.",
+        group: "articulus-diagrams",
+      },
+      {
+        title: "Safety & Limits Management",
+        src: "/projects/articulus/safety-limits.png",
+        caption:
+          "Layered safety concept: software-defined soft limits + fault monitoring + hardware-enforced hard limits / shutdown paths.",
+        group: "articulus-diagrams",
+      },
 
-  results: [
-    "Predictable, deterministic system behavior during demos and validation",
-    "Safe handling of dynamic tool swaps without loss of control or teleoperation continuity",
-    "Improved bring-up and debug cycles through integrated logging and visualization tools",
-    "Reduced hardware risk through simulation-first validation and staged deployment"
-  ],
+      {
+        title: "System Architecture (Representative)",
+        src: "/projects/articulus/SoftwareArchitecture.jpg",
+        caption:
+          "High-level control + communication architecture (representative; non-proprietary).",
+      },
+      {
+        title: "Bring-up / Debug Context",
+        src: "/projects/articulus/workflow.jpg",
+        caption: "Personal workspace photo.",
+      },
+    ],
 
-  bullets: [
-    "End-to-end ownership of real-time control, communication, and safety-aware motion pipelines for surgical robotics",
-    "7-axis coordinated motion with micro/macro motion decomposition under teleoperation",
-    "Tool-frame motion control supporting RPY orientation and linear tool-axis insertion",
-    "Dynamic instrument tracking and tool swap handling with safe pipeline re-initialization",
-    "Deterministic multithreaded execution with explicit real-time scheduling guarantees",
-    "DDS-based low-latency communication across distributed robotic subsystems",
-    "Standards-aware development aligned with applicable ISO safety requirements"
-  ],
-},
+    approach: [
+      "Architected and implemented the core real-time software pipeline spanning encoder feedback ingestion, synchronized control and planning loops, and deterministic actuator command execution",
+      "Designed multithreaded real-time execution models with explicit scheduling and timing guarantees for control, communication, and monitoring tasks",
+      "Integrated DDS-based communication for low-latency, reliable data exchange between distributed robotic components",
+      "Implemented safety and constraint handling (hard limits, soft limits, saturation, fault responses) informed by applicable ISO and medical robotics safety standards",
+      "Designed coordinated motion strategies supporting teleoperated micro- and macro-scale movements on a multi-axis robotic system",
+      "Implemented tool-frame motion control supporting roll, pitch, yaw orientation and linear insertion along the tool axis",
+      "Integrated kinematics (FK/IK) into teleoperation, instrument tracking, and trajectory execution workflows",
+      "Designed and tuned PID-based joint controllers for stable tracking under real hardware constraints",
+      "Integrated instrument tracking into the real-time control pipeline for tool-aware motion, safety enforcement, and operator feedback",
+      "Designed tool lifecycle handling for dynamic instrument attachment and swap events, including tool identification, frame updates, safety re-initialization, and control pipeline reconfiguration",
+      "Developed observability tooling including high-frequency data logging and IMGUI-based dashboards for bring-up, debugging, and validation",
+    ],
 
+    results: [
+      "Predictable, deterministic system behavior during demos and validation",
+      "Safe handling of dynamic tool swaps without loss of control or teleoperation continuity",
+      "Improved bring-up and debug cycles through integrated logging and visualization tools",
+      "Reduced hardware risk through simulation-first validation and staged deployment",
+    ],
+
+    bullets: [
+      "End-to-end ownership of real-time control, communication, and safety-aware motion pipelines for surgical robotics",
+      "Multi-DOF coordinated motion with micro/macro motion decomposition under teleoperation",
+      "Tool-frame motion control supporting RPY orientation and linear tool-axis insertion",
+      "Dynamic instrument tracking and tool swap handling with safe pipeline re-initialization",
+      "Deterministic multithreaded execution with explicit real-time scheduling guarantees",
+      "DDS-based low-latency communication across distributed robotic subsystems",
+      "Standards-aware development aligned with applicable ISO safety requirements",
+    ],
+  },
 
   {
     slug: "sae-baja",
@@ -64,7 +101,8 @@ export const projects = [
     tags: ["Systems", "Design", "Testing", "Leadership"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Deliver a working vehicle system under timeline, cost, and reliability constraints.",
+    problem:
+      "Deliver a working vehicle system under timeline, cost, and reliability constraints.",
     approach: [
       "Owned subsystem-level design decisions and integration planning",
       "Iterated through build → test → failure → fix loops",
@@ -90,7 +128,8 @@ export const projects = [
     tags: ["MuJoCo", "Python", "Control", "Manipulation"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Build stable manipulation behaviors in simulation and evaluate control/tracking performance.",
+    problem:
+      "Build stable manipulation behaviors in simulation and evaluate control/tracking performance.",
     approach: [
       "Implemented joint-space and task-space tracking controllers",
       "Built task environments + evaluation scripts for repeatability",
@@ -116,7 +155,8 @@ export const projects = [
     tags: ["Embedded", "Control", "Computer Vision", "Mechatronics"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Convert human hand motion into smooth, stable actuator commands for a robotic mechanism.",
+    problem:
+      "Convert human hand motion into smooth, stable actuator commands for a robotic mechanism.",
     approach: [
       "Used vision/gesture signals to generate reference commands",
       "Implemented feedback control + safety constraints",
@@ -142,7 +182,8 @@ export const projects = [
     tags: ["Robotics", "Autonomy", "Integration"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Build a small robot system that can sense, decide, and act reliably in a home-like environment.",
+    problem:
+      "Build a small robot system that can sense, decide, and act reliably in a home-like environment.",
     approach: [
       "Defined a minimal autonomy stack (sense → plan → act)",
       "Built integration paths for sensors and control logic",
@@ -168,7 +209,8 @@ export const projects = [
     tags: ["PX4", "Embedded", "Control", "Autonomy"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Learn and extend an autopilot stack with a focus on control + system behavior.",
+    problem:
+      "Learn and extend an autopilot stack with a focus on control + system behavior.",
     approach: [
       "Studied PX4 architecture and module structure",
       "Ran simulations / SITL workflows and parameter tuning",
@@ -199,9 +241,7 @@ export const projects = [
       "Pick a scope you can finish fast (sensor → controller → actuator)",
       "Document the full stack: design, electronics, firmware, tests",
     ],
-    results: [
-      "In progress — will become a polished end-to-end build writeup",
-    ],
+    results: ["In progress — will become a polished end-to-end build writeup"],
     bullets: [
       "Planned full-stack build with clear deliverables",
       "Focus on demonstrable outcome + documentation",
@@ -223,14 +263,8 @@ export const projects = [
       "Iterate models and baseline comparisons",
       "Communicate results clearly (plots + takeaways)",
     ],
-    results: [
-      "Documented ML experiments and repos on GitHub",
-    ],
-    bullets: [
-      "Metric-driven evaluation",
-      "Baselines + iteration mindset",
-      "Clear reporting of results",
-    ],
+    results: ["Documented ML experiments and repos on GitHub"],
+    bullets: ["Metric-driven evaluation", "Baselines + iteration mindset", "Clear reporting of results"],
   },
 
   {
@@ -243,17 +277,9 @@ export const projects = [
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
     problem: "Analyze high-speed dynamics with defensible assumptions and clear outputs.",
-    approach: [
-      "Structured assumptions, equations, and validation steps",
-      "Produced plots / summaries for engineering readability",
-    ],
-    results: [
-      "Research-style writeup and analysis workflow",
-    ],
-    bullets: [
-      "Structured modeling + reporting",
-      "Engineering-style documentation",
-    ],
+    approach: ["Structured assumptions, equations, and validation steps", "Produced plots / summaries for engineering readability"],
+    results: ["Research-style writeup and analysis workflow"],
+    bullets: ["Structured modeling + reporting", "Engineering-style documentation"],
   },
 
   {
@@ -266,16 +292,8 @@ export const projects = [
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
     problem: "An ongoing build where the goal is to ship measurable progress and a clean story.",
-    approach: [
-      "Weekly progress checkpoints",
-      "Document decisions + failures + fixes",
-    ],
-    results: [
-      "In progress — will evolve into a polished project page",
-    ],
-    bullets: [
-      "Work-in-progress with public documentation",
-      "Iteration + learning captured cleanly",
-    ],
+    approach: ["Weekly progress checkpoints", "Document decisions + failures + fixes"],
+    results: ["In progress — will evolve into a polished project page"],
+    bullets: ["Work-in-progress with public documentation", "Iteration + learning captured cleanly"],
   },
 ];

@@ -11,7 +11,10 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const fallbackHero = "/projects/_placeholder/hero.jpg";
+
+// Gallery helpers (for the 3 side-by-side diagrams)
+const diagrams = (project.gallery || []).filter((g) => g.group === "articulus-diagrams");
+const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus-diagrams");
 ---
 
 <!doctype html>
@@ -32,10 +35,51 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
     h2 { margin:22px 0 10px; }
     ul { margin:10px 0 0; padding-left:18px; }
     li { margin:8px 0; opacity:.95; line-height:1.55; }
-    img { width:100%; border-radius:16px; border:1px solid #1f2937; background:#111827; }
+
+    /* Buttons */
     .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     .pill { padding:8px 12px; border:1px solid #243042; border-radius:999px; background:#0f172a; color:#e6edf3; text-decoration:none; opacity:.92; }
     .pill:hover { opacity:1; }
+
+    /* 3-up grid for diagrams */
+    .grid3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
+
+    .card {
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      background: #0f172a;
+      padding: 12px;
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .card img {
+      width: 100%;
+      height: 360px;          /* makes them align nicely */
+      object-fit: contain;    /* prevents cropping */
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      background: #111827;
+    }
+    .caption {
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: 0.78;
+      line-height: 1.45;
+    }
+
+    .stack { display:flex; flex-direction:column; gap:14px; }
+    .stack img { width:100%; border-radius:16px; border:1px solid #1f2937; background:#111827; }
+    .imgtitle { margin-top:8px; font-size:13px; opacity:.86; }
+    .imgcap { margin-top:4px; font-size:13px; opacity:.72; line-height:1.45; }
   </style>
 </head>
 
@@ -57,15 +101,25 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
       {project.tags.map(t => <span class="tag">{t}</span>)}
     </div>
 
-    <div style="margin-top:18px;">
-      <img src={project.hero} alt={project.title} onerror={`this.src='${fallbackHero}'`} />
-      <div class="muted" style="margin-top:8px; font-size:13px;">
-        Add images later under <code>public/projects/{project.slug}/</code> and update <code>hero</code> in <code>projects.js</code>.
-      </div>
-    </div>
+    <!-- ✅ NO HERO IMAGE ON PROJECT PAGE -->
 
     <h2>Problem</h2>
     <div class="panel">{project.problem}</div>
+
+    {diagrams.length ? (
+      <>
+        <h2>Technical Diagrams & Workflow</h2>
+        <div class="grid3">
+          {diagrams.map((d) => (
+            <div class="card">
+              <h3>{d.title}</h3>
+              <img src={d.src} alt={d.title} loading="lazy" />
+              {d.caption ? <div class="caption">{d.caption}</div> : null}
+            </div>
+          ))}
+        </div>
+      </>
+    ) : null}
 
     <h2>Approach</h2>
     <div class="panel">
@@ -87,6 +141,21 @@ const fallbackHero = "/projects/_placeholder/hero.jpg";
         {(project.bullets || []).map(b => <li>{b}</li>)}
       </ul>
     </div>
+
+    {restGallery.length ? (
+      <>
+        <h2>Additional Images</h2>
+        <div class="panel stack">
+          {restGallery.map((g) => (
+            <div>
+              <img src={g.src} alt={g.title || project.title} loading="lazy" />
+              {g.title ? <div class="imgtitle">{g.title}</div> : null}
+              {g.caption ? <div class="imgcap">{g.caption}</div> : null}
+            </div>
+          ))}
+        </div>
+      </>
+    ) : null}
   </main>
 </body>
 </html>
