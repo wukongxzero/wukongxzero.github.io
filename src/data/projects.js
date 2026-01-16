@@ -15,12 +15,12 @@ export const projects = [
     "Teleoperation"
   ],
 
-  hero: "/projects/articulus/galaxi/system.png",
+  hero: "/projects/articulus/SoftwareArchitecture.jpg",
 
   links: { github: "", video: "" },
 
   problem:
-    "Architect deterministic real-time control and communication pipelines for a 7-axis surgical robotic platform, supporting tool-frame orientation and insertion control (RPY + linear tool-axis motion), dynamic instrument swaps, teleoperated micro/macro motion, and safety-aware behavior aligned with applicable ISO standards.",
+    "Architect deterministic real-time control and communication pipelines for a multi-DOF surgical robotic manipulators platform, supporting tool-frame orientation and insertion control (RPY + linear tool-axis motion), dynamic instrument swaps, teleoperated micro/macro motion, and safety-aware behavior aligned with applicable ISO standards.",
 
   approach: [
     "Architected and implemented the core real-time software pipeline spanning encoder feedback ingestion, synchronized control and planning loops, and deterministic actuator command execution",
