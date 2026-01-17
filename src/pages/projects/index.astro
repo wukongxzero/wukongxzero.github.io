@@ -1,96 +1,221 @@
 ---
+import Layout from "../../layouts/Layout.astro";
 import { projects } from "../../data/projects.js";
 
-const tier1 = projects.filter(p => p?.tier === 1);
-const tier2 = projects.filter(p => p?.tier === 2);
-const tier3 = projects.filter(p => p?.tier === 3);
+const NAME = "Pavan Velagaleti";
+const LOCATION = "New York, NY";
+const EMAIL = "your_real_email@domain.com";
+const PROFILE_IMG = "/profile.jpg";
+const FLAGSHIP_SLUG = "articulus-surgical-robotics";
 
-const fallbackHero = "/projects/_placeholder/hero.jpg";
+const byYearDesc = (a, b) => (b.year || "").localeCompare(a.year || "");
+const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
+
+const flagship =
+  projects.find((p) => p.slug === FLAGSHIP_SLUG) ??
+  projects.find((p) => Number(p.tier) === 1) ??
+  projects[0];
+
+const selected = projects.filter((p) => Number(p.tier) === 2).sort(byYearDesc);
+const wip = projects.filter((p) => Number(p.tier) >= 3).sort(byYearDesc);
+
+const topTags = ["C++", "Real-time", "Control", "DDS", "Systems"];
 ---
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projects | Pavan</title>
-  <style>
-    body { margin:0; font-family:system-ui; background:#0b1220; color:#e6edf3; }
-    a { color:inherit; text-decoration:none; }
-    .wrap { max-width:1100px; margin:0 auto; padding:40px 20px; }
-    .top { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; }
-    .pill { padding:8px 12px; border:1px solid #243042; border-radius:999px; background:#0f172a; color:#e6edf3; opacity:.92; }
-    .pill:hover { opacity:1; border-color:#58a6ff; }
-    .muted { opacity:.75; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:14px; }
-    .card { border:1px solid #1f2937; background:#0f172a; border-radius:16px; overflow:hidden; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
-    .card:hover { transform:translateY(-6px); border-color:rgba(88,166,255,.6); box-shadow:0 18px 40px rgba(0,0,0,.4); }
-    .card img { width:100%; height:170px; object-fit:cover; display:block; background:#111827; }
-    .pad { padding:14px; }
-    .tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .tag { font-size:12px; padding:4px 8px; border-radius:999px; background:#111827; border:1px solid #243042; opacity:.9; }
-    h1 { margin:0; }
-    h2 { margin:24px 0 8px; font-size:18px; }
-  </style>
-</head>
+<Layout
+  title={`${NAME} — Robotics Software Engineer`}
+  description="Robotics engineer building real-time, safety-critical systems with a simulation-to-hardware mindset."
+>
+  <main>
+    <section class="hero">
+      <div class="heroL">
+        <p class="kicker">Robotics Software Engineer • {LOCATION}</p>
+        <h1>Real-time, safety-critical robotic systems.</h1>
+        <p class="sub">
+          I build deterministic control + communication pipelines, safety-aware behaviors, and tooling that makes robots
+          debuggable. Industry experience in surgical robotics; strong focus on systems ownership.
+        </p>
 
-<body>
-  <div class="wrap">
-    <div class="top">
-      <div>
-        <h1>Projects</h1>
-        <div class="muted">Click a project to open the full story.</div>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a class="pill" href="/">← Home</a>
-        <a class="pill" href="https://github.com/wukongxzero" target="_blank">GitHub</a>
-      </div>
-    </div>
+        <div class="cta">
+          <a class="btn btnP" href={flagship ? `/projects/${flagship.slug}/` : "/projects/"}>Start with flagship →</a>
+          <a class="btn" href="/projects/">Browse projects</a>
+          <a class="btn" href="/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+          <a class="btn" href={`mailto:${EMAIL}`}>Email</a>
+        </div>
 
-    <h2>Tier 1 — strongest proof</h2>
-    <div class="grid">
-      {tier1.map(p => (
-        <a class="card" href={`/projects/${p.slug}/`}>
-          <img src={p.hero || fallbackHero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
-          <div class="pad">
-            <div style="display:flex; justify-content:space-between; gap:10px;">
-              <b>{p.title}</b>
-              <span class="muted" style="font-size:12px;">{p.year}</span>
+        <div class="chips">
+          {topTags.map((t) => <span class="chip">{t}</span>)}
+        </div>
+      </div>
+
+      <aside class="heroR">
+        <div class="card">
+          <div class="cardTop">
+            <img class="avatar" src={PROFILE_IMG} alt={NAME} />
+            <div>
+              <div class="nm">{NAME}</div>
+              <div class="mt">Robotics • Control • Real-time Systems</div>
             </div>
-            <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
-            <div class="tags">{(p.tags || []).map(t => <span class="tag">{t}</span>)}</div>
           </div>
-        </a>
-      ))}
-    </div>
+          <div class="mini">
+            <div><strong>Focus:</strong> control, timing, low-latency comms</div>
+            <div><strong>Mode:</strong> simulation-first, testable systems</div>
+            <div><strong>Signal:</strong> systems ownership + debugging</div>
+          </div>
+        </div>
+      </aside>
+    </section>
 
-    <h2>Tier 2 — solid builds</h2>
-    <div class="grid">
-      {tier2.map(p => (
-        <a class="card" href={`/projects/${p.slug}/`}>
-          <img src={p.hero || fallbackHero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
-          <div class="pad">
-            <b>{p.title}</b>
-            <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
-            <div class="tags">{(p.tags || []).map(t => <span class="tag">{t}</span>)}</div>
-          </div>
-        </a>
-      ))}
-    </div>
+    {flagship ? (
+      <section class="section">
+        <header class="hd">
+          <h2>Flagship</h2>
+          <p>Engineering proof (not vibes). Read this first.</p>
+        </header>
 
-    <h2>Tier 3 — research / WIP</h2>
-    <div class="grid">
-      {tier3.map(p => (
-        <a class="card" href={`/projects/${p.slug}/`}>
-          <img src={p.hero || fallbackHero} alt={p.title} onerror={`this.src='${fallbackHero}'`} />
-          <div class="pad">
-            <b>{p.title}</b>
-            <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
-            <div class="tags">{(p.tags || []).map(t => <span class="tag">{t}</span>)}</div>
+        <article class="flagship">
+          <a class="media" href={`/projects/${flagship.slug}/`} aria-label={`Open ${flagship.title}`}>
+            {hasHero(flagship) ? <img src={flagship.hero} alt={flagship.title} loading="lazy" /> : <div class="ph">Add hero image</div>}
+          </a>
+
+          <div class="body">
+            <div class="meta">
+              <span class="pill">Industry</span>
+              <span class="muted">{flagship.year}</span>
+            </div>
+            <h3><a href={`/projects/${flagship.slug}/`}>{flagship.title}</a></h3>
+            <p class="sub2">{flagship.subtitle}</p>
+
+            {flagship.role ? <p class="role"><strong>{flagship.role}</strong></p> : null}
+
+            <ul class="bul">
+              <li>Owned real-time control + comms + safety-aware motion pipelines</li>
+              <li>Teleoperation behaviors, tool swap lifecycle, observability tooling</li>
+              <li>Latency constraints, standards-aware safety thinking</li>
+            </ul>
+
+            <div class="chips">
+              {flagship.tags?.slice(0, 6).map((t) => <span class="chip">{t}</span>)}
+            </div>
+
+            <div class="cta">
+              <a class="btn btnP" href={`/projects/${flagship.slug}/`}>View case study →</a>
+            </div>
           </div>
-        </a>
-      ))}
-    </div>
-  </div>
-</body>
-</html>
+        </article>
+      </section>
+    ) : null}
+
+    <section class="section">
+      <header class="hd">
+        <h2>Selected projects</h2>
+        <p>Supporting proof across integration, control, and systems.</p>
+      </header>
+
+      <div class="grid">
+        {selected.map((p) => (
+          <article class="pCard">
+            <a class="pMedia" href={`/projects/${p.slug}/`} aria-label={`Open ${p.title}`}>
+              {hasHero(p) ? <img src={p.hero} alt={p.title} loading="lazy" /> : <div class="ph">{p.title}</div>}
+            </a>
+            <div class="pBody">
+              <div class="meta">
+                <span class="pill">Project</span>
+                <span class="muted">{p.year}</span>
+              </div>
+              <h3 class="h3"><a href={`/projects/${p.slug}/`}>{p.title}</a></h3>
+              <p class="sub2">{p.subtitle}</p>
+              <div class="chips">{p.tags?.slice(0, 4).map((t) => <span class="chip">{t}</span>)}</div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {wip.length ? (
+      <section class="section">
+        <details class="details">
+          <summary class="sum">Exploratory / WIP ({wip.length})</summary>
+          <div class="grid">
+            {wip.map((p) => (
+              <article class="pCard mutedCard">
+                <a class="pMedia" href={`/projects/${p.slug}/`} aria-label={`Open ${p.title}`}>
+                  {hasHero(p) ? <img src={p.hero} alt={p.title} loading="lazy" /> : <div class="ph">{p.title}</div>}
+                </a>
+                <div class="pBody">
+                  <div class="meta">
+                    <span class="pill">WIP</span>
+                    <span class="muted">{p.year}</span>
+                  </div>
+                  <h3 class="h3"><a href={`/projects/${p.slug}/`}>{p.title}</a></h3>
+                  <p class="sub2">{p.subtitle}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </details>
+      </section>
+    ) : null}
+  </main>
+
+  <style>
+    h1,h2,h3{letter-spacing:-.03em}
+    h1{margin:0 0 10px;font-size:44px;line-height:1.06;max-width:24ch}
+    h2{margin:0 0 6px;font-size:20px}
+    h3{margin:0 0 6px;font-size:16px;line-height:1.2}
+    p{margin:0}
+    a{text-decoration:none}
+    .kicker{font-size:13px;opacity:.72;margin:0 0 10px}
+    .sub{font-size:15px;opacity:.9;max-width:72ch}
+    .sub2{font-size:13px;opacity:.86;margin:0 0 8px}
+    .role{font-size:13px;margin:8px 0 8px;opacity:.95}
+
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start;padding:10px 0 6px}
+    .heroR .card{border:1px solid rgba(11,13,18,.10);border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:14px}
+    .cardTop{display:flex;gap:12px;align-items:center}
+    .avatar{width:54px;height:54px;border-radius:999px;object-fit:cover;border:1px solid rgba(11,13,18,.12)}
+    .nm{font-weight:900;font-size:14px}
+    .mt{font-size:12px;opacity:.72}
+    .mini{margin-top:10px;display:grid;gap:8px;font-size:12px;opacity:.9}
+
+    .cta{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 10px}
+    .btn{font-size:13px;border:1px solid rgba(11,13,18,.10);border-radius:999px;padding:9px 12px;background:#fff}
+    .btnP{font-weight:900}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .chip{font-size:12px;border:1px solid rgba(11,13,18,.10);border-radius:999px;padding:5px 9px;opacity:.92;background:#fff}
+
+    .section{margin-top:28px}
+    .hd p{opacity:.74}
+
+    .flagship{margin-top:12px;display:grid;grid-template-columns:420px 1fr;gap:16px;border:1px solid rgba(11,13,18,.10);border-radius:18px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+    .media{display:block}
+    .media img{width:100%;height:100%;min-height:280px;object-fit:cover;display:block}
+    .body{padding:16px}
+    .bul{margin:0 0 10px;padding-left:18px;font-size:13px;opacity:.92}
+    .bul li{margin:6px 0}
+
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:12px}
+    .pCard{border:1px solid rgba(11,13,18,.10);border-radius:18px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+    .pMedia img{width:100%;height:160px;object-fit:cover;display:block}
+    .pBody{padding:12px 12px 14px}
+
+    .meta{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+    .pill{font-size:11px;border:1px solid rgba(11,13,18,.10);border-radius:999px;padding:4px 8px}
+    .muted{opacity:.7}
+    .ph{height:160px;display:grid;place-items:center;background:rgba(11,13,18,.03);font-size:12px;opacity:.7;padding:12px;text-align:center}
+
+    .details{margin-top:6px}
+    .sum{cursor:pointer;font-weight:900;padding:10px 0}
+    .mutedCard{opacity:.95}
+
+    @media (max-width: 980px){
+      h1{font-size:34px}
+      .hero{grid-template-columns:1fr}
+      .flagship{grid-template-columns:1fr}
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width: 560px){
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</Layout>

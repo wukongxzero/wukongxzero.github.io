@@ -1,328 +1,554 @@
 ---
+import Layout from "../layouts/Layout.astro";
 import { projects } from "../data/projects.js";
 
-const tier1 = projects.filter(p => p.tier === 1);
-const tier2 = projects.filter(p => p.tier === 2);
-const tier3 = projects.filter(p => p.tier === 3);
+const tier1 = projects.filter((p) => Number(p.tier) === 1);
+const tier2 = projects.filter((p) => Number(p.tier) === 2);
+const tier3 = projects.filter((p) => Number(p.tier) >= 3);
 
 const fallbackHero = "/projects/_placeholder/hero.jpg";
+const safeImg = (src) => (typeof src === "string" && src.trim() ? src : fallbackHero);
+
+/** Same data model as /stack/index.astro */
+const CATS = [
+  {
+    key: "programming",
+    label: "Programming",
+    icon: "{}",
+    items: [
+      {
+        title: "C++",
+        desc: "Real-time oriented robotics software, control loops, tooling.",
+        tags: ["C++", "Perf", "Systems"],
+      },
+      {
+        title: "Python",
+        desc: "Simulation tooling, data + evaluation scripts, prototyping.",
+        tags: ["Python", "Tools"],
+      },
+      {
+        title: "MATLAB",
+        desc: "Control analysis, modeling, simulation validation.",
+        tags: ["MATLAB", "Control"],
+      },
+    ],
+  },
+  {
+    key: "robotics",
+    label: "Robotics & Control Systems",
+    icon: "⚙️",
+    items: [
+      {
+        title: "Kinematics",
+        desc: "FK/IK, frames, Jacobians, tool-frame motion.",
+        tags: ["FK/IK", "Frames"],
+      },
+      {
+        title: "PID / PD Control",
+        desc: "Tracking controllers, tuning, stability tradeoffs.",
+        tags: ["Control", "Tuning"],
+      },
+      {
+        title: "Teleoperation",
+        desc: "Low-latency command → motion pipelines.",
+        tags: ["Teleop", "Latency"],
+      },
+      {
+        title: "Kalman Filtering",
+        desc: "State estimation from noisy measurements.",
+        tags: ["Estimation"],
+      },
+    ],
+  },
+  {
+    key: "mcu",
+    label: "Microcontrollers & Boards",
+    icon: "🧩",
+    items: [
+      { title: "MCUs", desc: "Sensors + actuators + timing constraints.", tags: ["Embedded"] },
+      { title: "CAN Bus", desc: "Deterministic comms patterns for robotics subsystems.", tags: ["CAN", "Comms"] },
+    ],
+  },
+  {
+    key: "sensors",
+    label: "Sensors & Electronics",
+    icon: "🔎",
+    items: [
+      { title: "Intel RealSense", desc: "Depth pipelines for perception & robotics apps.", tags: ["Depth"] },
+      { title: "Encoders", desc: "Feedback integration for closed-loop control.", tags: ["Feedback"] },
+    ],
+  },
+  {
+    key: "sim",
+    label: "Simulation & Tooling",
+    icon: "🧪",
+    items: [
+      { title: "MuJoCo", desc: "Manipulation tasks, torque control, evaluation loops.", tags: ["MuJoCo"] },
+      { title: "Gazebo", desc: "Robot simulation for integration workflows.", tags: ["Gazebo"] },
+      { title: "PyBullet", desc: "Fast prototyping & baseline sims.", tags: ["PyBullet"] },
+    ],
+  },
+  {
+    key: "tools",
+    label: "Specialized Tools",
+    icon: "🛠️",
+    items: [
+      { title: "Logging & Debug", desc: "High-rate logs + dashboards for bring-up.", tags: ["Observability"] },
+      { title: "Git / Linux", desc: "Dev workflows, reproducibility, tooling.", tags: ["Git", "Linux"] },
+    ],
+  },
+];
 ---
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pavan Kushal Velagaleti | Robotics</title>
+<Layout title="Pavan Velagaleti | Robotics">
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="heroL">
+        <p class="kicker">Robotics Software Engineer • New York, NY</p>
+        <h1>Building real-time, safety-critical robotic systems</h1>
 
-  <style>
-    html { scroll-behavior: smooth; }
-    body {
-      margin:0;
-      font-family: system-ui;
-      background:#0b1220;
-      color:#e6edf3;
-    }
-    a { color:#58a6ff; text-decoration:none; }
+        <p class="sub">
+          Robotics & mechatronics — real-time control, embedded systems,
+          simulation-first workflows, and systems-level integration.
+        </p>
 
-    /* NAV */
-    nav {
-      position:sticky;
-      top:0;
-      z-index:50;
-      background:rgba(11,18,32,.75);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid #1f2937;
-    }
-    .bar {
-      max-width:1100px;
-      margin:0 auto;
-      padding:14px 20px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .pill {
-      padding:8px 12px;
-      border:1px solid #243042;
-      border-radius:999px;
-      background:#0f172a;
-      color:#e6edf3;
-      opacity:.9;
-      transition: opacity .15s ease, border-color .15s ease;
-    }
-    .pill:hover {
-      opacity:1;
-      border-color:#58a6ff;
-    }
+        <div class="panel">
+          <strong>What I’m looking for</strong>
+          <p class="muted">
+            Robotics Software Intern / New Grad — real-time control,
+            robotic systems, simulation, autonomy.
+          </p>
+        </div>
 
-    /* LAYOUT */
-    .wrap { max-width:1100px; margin:0 auto; padding:44px 20px; }
-    .hero {
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:20px;
-      align-items:center;
-    }
-    @media (max-width:900px){
-      .hero{ grid-template-columns:1fr; }
-    }
+        <div class="actions">
+          <a class="btn btnPrimary" href="#projects">View Projects ↓</a>
+          <a class="btn" href="#stack">Tools & Stack</a>
+          <a class="btn" href="/projects/">All Projects</a>
+          <a class="btn" href="mailto:ADD_EMAIL_HERE">Contact</a>
+        </div>
 
-    h1 {
-      font-size:44px;
-      margin:0 0 10px 0;
-      letter-spacing:-.02em;
-    }
-    .sub {
-      opacity:.8;
-      max-width:820px;
-      line-height:1.6;
-    }
-
-    section {
-      padding-top:90px;
-      margin-top:-90px;
-    }
-    .title {
-      font-size:26px;
-      margin:26px 0 8px;
-    }
-
-    /* PANELS */
-    .panel {
-      border:1px solid #1f2937;
-      border-radius:16px;
-      background:#0f172a;
-      padding:14px;
-    }
-    .muted { opacity:.75; }
-
-    /* GRID */
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:16px;
-      margin-top:14px;
-    }
-
-    /* CARD (INTERACTIVE) */
-    .card {
-      border:1px solid #1f2937;
-      background:#0f172a;
-      border-radius:16px;
-      overflow:hidden;
-      color:inherit;
-
-      transform: translateY(0);
-      transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        border-color .2s ease;
-    }
-    .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(88,166,255,.6);
-      box-shadow: 0 18px 40px rgba(0,0,0,.4);
-    }
-
-    .card img {
-      width:100%;
-      height:170px;
-      object-fit:cover;
-      display:block;
-      background:#111827;
-    }
-
-    .pad { padding:14px; }
-
-    /* TAGS */
-    .tags {
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .tag {
-      font-size:12px;
-      padding:4px 8px;
-      border-radius:999px;
-      background:#111827;
-      border:1px solid #243042;
-      opacity:.85;
-      transform: translateY(3px);
-      transition: transform .18s ease, opacity .18s ease;
-    }
-    .card:hover .tag {
-      opacity:1;
-      transform: translateY(0);
-    }
-
-    /* SKILLS */
-    .skills {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-      gap:14px;
-      margin-top:14px;
-    }
-
-    /* SCROLL REVEAL */
-    .reveal {
-      opacity:0;
-      transform: translateY(18px);
-      transition: opacity .5s ease, transform .5s ease;
-    }
-    .reveal.show {
-      opacity:1;
-      transform: translateY(0);
-    }
-  </style>
-</head>
-
-<body>
-  <!-- NAV -->
-  <nav>
-    <div class="bar">
-      <strong>Pavan</strong>
-      <a class="pill" href="#projects">Projects</a>
-      <a class="pill" href="#skills">Tools & Skills</a>
-      <a class="pill" href="#about">About</a>
-      <a class="pill" href="#contact">Contact</a>
-      <div style="flex:1"></div>
-      <a class="pill" href="/projects/">All Projects</a>
-      <a class="pill" href="https://github.com/wukongxzero" target="_blank">GitHub</a>
-      <a class="pill" href="https://www.linkedin.com/in/pavan-kushal-velagaleti" target="_blank">LinkedIn</a>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <div class="wrap hero reveal">
-    <div>
-      <h1>Pavan Kushal Velagaleti</h1>
-      <p class="sub">
-        Robotics & Mechatronics — real-time control, embedded systems,
-        simulation, and autonomy.
-      </p>
-
-      <div class="panel" style="margin-top:14px;">
-        <strong>What I’m looking for</strong>
-        <div class="muted" style="margin-top:6px;">
-          Robotics Software Intern / New Grad — real-time control,
-          robotic systems, simulation, autonomy.
+        <div class="chips">
+          <span class="chip">C++</span>
+          <span class="chip">Real-time</span>
+          <span class="chip">Control</span>
+          <span class="chip">DDS</span>
+          <span class="chip">Systems</span>
         </div>
       </div>
 
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
-        <a class="pill" href="#projects">View Projects ↓</a>
-        <a class="pill" href="/projects/">Projects Page</a>
-        <a class="pill" href="#contact">Contact</a>
-      </div>
-    </div>
+      <!-- PROFILE CARD -->
+      <aside class="heroR">
+        <div class="profileCard">
+          <div class="profileMedia">
+            <img
+              src="/profile.jpg"
+              alt="Pavan Velagaleti"
+              class="profileImg"
+              loading="eager"
+              onerror={`this.src='${fallbackHero}'`}
+            />
+          </div>
 
-    <div class="panel">
-      <strong>Profile</strong>
-      <img
-        src="/profile.jpg"
-        alt="Pavan"
-        style="width:100%; border-radius:14px; margin-top:10px; border:1px solid #1f2937;"
-        onerror={`this.src='${fallbackHero}'`}
-      />
-      <div class="muted" style="margin-top:8px; font-size:14px;">
-      </div>
-    </div>
-  </div>
+          <div class="profileBody">
+            <div class="profileName">Pavan Velagaleti</div>
+            <div class="muted">Robotics • Control • Real-time Systems</div>
 
-  <!-- PROJECTS -->
-  <div class="wrap">
-    <section id="projects">
-      <div class="title">Projects</div>
+            <p class="about">
+              MS Mechatronics & Robotics @ NYU. Previously built real-time control,
+              teleoperation, and safety-aware motion pipelines for surgical robots.
+            </p>
+
+            <div class="actions small">
+              <a class="btn" href="https://github.com/wukongxzero" target="_blank" rel="noreferrer">GitHub</a>
+              <a class="btn" href="https://www.linkedin.com/in/pavan-kushal-velagaleti/" target="_blank" rel="noreferrer">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section">
+      <h2>Projects</h2>
       <p class="sub">Tiered by impact. Click any card for the engineering story.</p>
 
-      <strong>Tier 1 — strongest proof</strong>
-      <div class="grid">
-        {tier1.map(p => (
-          <a class="card reveal" href={`/projects/${p.slug}/`}>
-            <img src={p.hero} onerror={`this.src='${fallbackHero}'`} />
-            <div class="pad">
-              <div style="display:flex; justify-content:space-between;">
-                <strong>{p.title}</strong>
-                <span class="muted" style="font-size:12px;">{p.year}</span>
+      <div class="block">
+        <strong>Tier 1 — strongest proof</strong>
+        <div class="grid">
+          {tier1.map((p) => (
+            <a class="card" href={`/projects/${p.slug}/`}>
+              <img src={safeImg(p.hero)} alt={p.title} loading="lazy" />
+              <div class="pad">
+                <div class="row">
+                  <strong>{p.title}</strong>
+                  <span class="muted small">{p.year}</span>
+                </div>
+                <p class="muted">{p.subtitle}</p>
+                <div class="tags">
+                  {p.tags.slice(0, 6).map((t) => <span class="tag">{t}</span>)}
+                </div>
               </div>
-              <div class="muted" style="margin-top:6px;">{p.subtitle}</div>
-              <div class="tags">{p.tags.map(t => <span class="tag">{t}</span>)}</div>
-            </div>
-          </a>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="block">
+        <strong>Tier 2 — solid builds</strong>
+        <div class="grid">
+          {tier2.map((p) => (
+            <a class="card" href={`/projects/${p.slug}/`}>
+              <img src={safeImg(p.hero)} alt={p.title} loading="lazy" />
+              <div class="pad">
+                <strong>{p.title}</strong>
+                <p class="muted">{p.subtitle}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="block">
+        <strong>Tier 3 — research / WIP</strong>
+        <div class="grid">
+          {tier3.map((p) => (
+            <a class="card" href={`/projects/${p.slug}/`}>
+              <img src={safeImg(p.hero)} alt={p.title} loading="lazy" />
+              <div class="pad">
+                <strong>{p.title}</strong>
+                <p class="muted">{p.subtitle}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLS / STACK (same style as /stack page) -->
+    <section id="stack" class="section stackSection">
+      <header class="head">
+        <h2>Tools & Tech Stack</h2>
+        <p class="sub">Select a category to learn more.</p>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="Stack categories">
+        {CATS.map((c, i) => (
+          <button
+            class={`tab ${i === 0 ? "active" : ""}`}
+            type="button"
+            data-tab={c.key}
+            role="tab"
+            aria-selected={i === 0 ? "true" : "false"}
+          >
+            <span class="tabIcon">{c.icon}</span>
+            {c.label}
+          </button>
         ))}
       </div>
 
-      <strong style="margin-top:26px; display:block;">Tier 2 — solid builds</strong>
-      <div class="grid">
-        {tier2.map(p => (
-          <a class="card reveal" href={`/projects/${p.slug}/`}>
-            <img src={p.hero} onerror={`this.src='${fallbackHero}'`} />
-            <div class="pad">
-              <strong>{p.title}</strong>
-              <div class="muted">{p.subtitle}</div>
-              <div class="tags">{p.tags.map(t => <span class="tag">{t}</span>)}</div>
-            </div>
-          </a>
-        ))}
-      </div>
+      {CATS.map((c, i) => (
+        <section class={`panelT ${i === 0 ? "show" : ""}`} data-panel={c.key} role="tabpanel">
+          <div class="stackGrid">
+            {c.items.map((it) => (
+              <button
+                class="stackCard"
+                type="button"
+                data-open
+                data-title={it.title}
+                data-desc={it.desc}
+                data-tags={it.tags?.join(",") ?? ""}
+              >
+                <div class="cardTop">
+                  <div class="cardTitle">{it.title}</div>
+                </div>
+                <div class="cardDesc">{it.desc}</div>
+                <div class="tags">
+                  {(it.tags ?? []).slice(0, 4).map((t) => <span class="tag">{t}</span>)}
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
 
-      <strong style="margin-top:26px; display:block;">Tier 3 — research / WIP</strong>
-      <div class="grid">
-        {tier3.map(p => (
-          <a class="card reveal" href={`/projects/${p.slug}/`}>
-            <img src={p.hero} onerror={`this.src='${fallbackHero}'`} />
-            <div class="pad">
-              <strong>{p.title}</strong>
-              <div class="muted">{p.subtitle}</div>
-              <div class="tags">{p.tags.map(t => <span class="tag">{t}</span>)}</div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <!-- SKILLS -->
-    <section id="skills">
-      <div class="title">Tools & Skills</div>
-      <div class="skills">
-        <div class="panel reveal"><strong>Control</strong><ul><li>PID / PD</li><li>Tracking & tuning</li></ul></div>
-        <div class="panel reveal"><strong>Robotics Software</strong><ul><li>C++ / Python</li><li>Simulation-first</li></ul></div>
-        <div class="panel reveal"><strong>Embedded</strong><ul><li>CAN / DDS concepts</li><li>Debug pipelines</li></ul></div>
-        <div class="panel reveal"><strong>Simulation</strong><ul><li>MuJoCo</li><li>Evaluation tooling</li></ul></div>
+      <!-- Modal -->
+      <div class="modal" data-modal aria-hidden="true">
+        <div class="backdrop" data-close></div>
+        <div class="sheet" role="dialog" aria-modal="true" aria-label="Stack detail">
+          <button class="x" type="button" data-close aria-label="Close">✕</button>
+          <div class="mTitle" data-m-title></div>
+          <div class="mDesc" data-m-desc></div>
+          <div class="mTags" data-m-tags></div>
+          <p class="hint muted">Tip: you can later attach a GIF or image per item.</p>
+        </div>
       </div>
     </section>
+  </main>
 
-    <!-- ABOUT -->
-    <section id="about">
-      <div class="title">About</div>
-      <p class="sub reveal">
-        I build robotic systems end-to-end with a focus on reliability,
-        real-time behavior, and clear engineering tradeoffs.
-      </p>
-    </section>
+  <style>
+    /* anchor reliability under sticky header */
+    #projects, #stack { scroll-margin-top: 90px; }
 
-    <!-- CONTACT -->
-    <section id="contact">
-      <div class="title">Contact</div>
-      <div class="panel reveal">
-        Email: <b>ADD_EMAIL_HERE</b><br />
-        GitHub: <a href="https://github.com/wukongxzero">github.com/wukongxzero</a><br />
-        LinkedIn: <a href="https://www.linkedin.com/in/pavan-kushal-Velagaleti/">linkedin.com/in/...</a>
-      </div>
-    </section>
-  </div>
+    h1{
+      font-size:52px; line-height:1.02; letter-spacing:-.04em;
+      margin:0 0 10px; max-width:18ch;
+    }
+    h2{ font-size:22px; margin:0 0 6px; }
+    p{ margin:6px 0; }
 
-  <!-- SCROLL REVEAL SCRIPT -->
-  <script>
-    const els = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add('show');
+    .kicker{ font-size:13px; color:var(--muted); }
+    .sub{ max-width:70ch; color:var(--muted); }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:28px;
+      align-items:center;
+      padding:24px 0 10px;
+    }
+    @media (max-width:900px){
+      .hero{ grid-template-columns:1fr; }
+      h1{ font-size:40px; }
+    }
+
+    .panel{
+      margin-top:14px;
+      padding:14px;
+      border-radius:16px;
+      background:var(--card);
+      border:1px solid var(--line);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .actions.small{ margin-top:10px; }
+
+    .btn{
+      font-size:13px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--bg);
+      color:var(--fg);
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(127,127,127,.45);
+      box-shadow: 0 10px 28px rgba(0,0,0,.10);
+    }
+    .btnPrimary{ font-weight:900; }
+
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .chip{
+      font-size:12px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:var(--card);
+      border:1px solid var(--line);
+    }
+
+    .profileCard{
+      border-radius:22px;
+      overflow:hidden;
+      background:var(--bg);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+    }
+    .profileMedia{
+      background:var(--card);
+      padding:16px;
+      display:grid;
+      place-items:center;
+    }
+    .profileImg{
+      width:150px; height:150px;
+      object-fit:cover;
+      object-position:center 15%;
+      border-radius:18px;
+      border:1px solid var(--line);
+      box-shadow:0 12px 28px rgba(0,0,0,.25);
+    }
+    .profileBody{ padding:14px 16px 16px; }
+    .profileName{ font-weight:900; letter-spacing:-.02em; }
+    .about{ font-size:13px; line-height:1.5; color:var(--muted); margin-top:8px; }
+
+    .section{ padding-top:70px; }
+    .block{ margin-top:18px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-top:12px;
+    }
+    @media (max-width:980px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+
+    .card{
+      border-radius:16px;
+      overflow:hidden;
+      background:var(--bg);
+      border:1px solid var(--line);
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card:hover{
+      transform:translateY(-6px);
+      border-color: rgba(127,127,127,.45);
+      box-shadow:var(--shadow);
+    }
+    .card img{
+      width:100%;
+      height:170px;
+      object-fit:cover;
+      background:var(--card);
+      display:block;
+    }
+    .block:first-of-type .card img{ object-fit:contain; }
+
+    .pad{ padding:14px; }
+    .row{ display:flex; justify-content:space-between; gap:10px; }
+
+    .tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .tag{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--card);
+      color:var(--fg);
+    }
+
+    .muted{ color:var(--muted); }
+    .small{ font-size:12px; }
+
+    /* ===== STACK SECTION (match /stack page) ===== */
+    .stackSection{ margin-top: 8px; }
+    .head{ margin-top: 6px; }
+    .head .sub{ margin:0 0 14px; }
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+    .tab{
+      display:flex;gap:10px;align-items:center;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid var(--line);background:var(--bg);color:var(--fg);
+      cursor:pointer;opacity:.82;
+      transition:opacity .15s ease, transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .tab:hover{opacity:1;transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,.10)}
+    .tab.active{opacity:1;border-color:rgba(240,185,75,.55);box-shadow:0 10px 28px rgba(0,0,0,.14)}
+    .tabIcon{width:24px;display:inline-grid;place-items:center;font-weight:900}
+
+    .panelT{display:none}
+    .panelT.show{display:block}
+
+    .stackGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+    @media (max-width:1100px){ .stackGrid{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:700px){ .stackGrid{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:460px){ .stackGrid{grid-template-columns:1fr} }
+
+    .stackCard{
+      text-align:left;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:var(--bg);
+      padding:14px;
+      min-height:160px;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .stackCard:hover{
+      transform:translateY(-4px);
+      border-color:rgba(127,127,127,.45);
+      box-shadow:0 20px 50px rgba(0,0,0,.18);
+    }
+    .cardTitle{font-weight:900;letter-spacing:-.01em}
+    .cardDesc{margin-top:8px;opacity:.75;font-size:13px;line-height:1.45}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;z-index:80}
+    .modal.show{display:block}
+    .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.42)}
+    .sheet{
+      position:absolute;left:50%;top:50%;
+      transform:translate(-50%,-50%);
+      width:min(780px,92vw);
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:var(--bg);
+      box-shadow:0 40px 100px rgba(0,0,0,.35);
+      padding:18px;
+    }
+    .x{
+      position:absolute;right:12px;top:10px;
+      border:1px solid var(--line);
+      background:var(--bg);
+      color:var(--fg);
+      border-radius:12px;
+      padding:6px 10px;
+      cursor:pointer
+    }
+    .mTitle{font-weight:900;font-size:20px;margin-bottom:8px}
+    .mDesc{opacity:.82;line-height:1.6}
+    .mTags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .hint{margin-top:12px;font-size:12px}
+  </style>
+
+  <script is:inline>
+    // Tabs (scoped to #stack so it doesn't conflict with /stack page)
+    const tabs = document.querySelectorAll("#stack [data-tab]");
+    const panels = document.querySelectorAll("#stack [data-panel]");
+
+    const setActive = (key) => {
+      tabs.forEach(t => {
+        const on = t.dataset.tab === key;
+        t.classList.toggle("active", on);
+        t.setAttribute("aria-selected", on ? "true" : "false");
       });
-    }, { threshold: 0.12 });
-    els.forEach(el => io.observe(el));
+      panels.forEach(p => p.classList.toggle("show", p.dataset.panel === key));
+    };
+
+    tabs.forEach(t => t.addEventListener("click", () => setActive(t.dataset.tab)));
+
+    // Modal
+    const modal = document.querySelector("#stack [data-modal]");
+    const titleEl = document.querySelector("#stack [data-m-title]");
+    const descEl = document.querySelector("#stack [data-m-desc]");
+    const tagsEl = document.querySelector("#stack [data-m-tags]");
+
+    const open = (btn) => {
+      titleEl.textContent = btn.dataset.title || "";
+      descEl.textContent = btn.dataset.desc || "";
+      const tags = (btn.dataset.tags || "").split(",").map(s => s.trim()).filter(Boolean);
+      tagsEl.innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join("");
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    };
+
+    const close = () => {
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    document.querySelectorAll("#stack [data-open]").forEach(b => b.addEventListener("click", () => open(b)));
+    document.querySelectorAll("#stack [data-close]").forEach(b => b.addEventListener("click", close));
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+
+    // Default tab
+    const first = tabs?.[0]?.dataset?.tab;
+    if (first) setActive(first);
   </script>
-</body>
-</html>
+</Layout>

@@ -1,144 +1,161 @@
 export const projects = [
-   {
-    slug: "articulus-surgical-robotics",
-    title: "Articulus Surgical Robotics",
-    subtitle:
-      "Real-time control, teleoperation, and safety-aware motion for surgical robotic systems",
-    year: "2023–2025",
-    tier: 1,
-    tags: [
-      "C++",
-      "Real-time",
-      "Control",
-      "Systems",
-      "Surgical Robotics",
-      "DDS",
-      "Teleoperation",
-    ],
+  // =========================
+  // FLAGSHIP (Tier 1)
+  // =========================
+  {
+  slug: "articulus-surgical-robotics",
+  title: "Articulus Surgical Robotics",
+  subtitle:
+    "Real-time control, teleoperation, and safety-aware motion for surgical robotic systems",
+  year: "2023–2025",
+  tier: 1,
+  tags: ["C++", "Real-time", "Control", "DDS", "Safety", "Systems"],
 
-    // Used by cards / lists (project detail page no longer shows hero)
-    hero: "/projects/articulus/Articulus.jpg",
+  hero: "/projects/articulus/Articulus.jpg",
+  links: {   website: "https://www.articulussurgical.com",
+ },
 
-    links: { github: "", video: "" },
+  role: "Lead Software Developer — Real-Time Control & Systems (Pulsar)", // CHANGED
 
-    problem:
-      "Architect deterministic real-time control and communication pipelines for a multi-DOF surgical robotics platform, supporting tool-frame orientation and insertion control (RPY + linear tool-axis motion), dynamic instrument swaps, teleoperated micro/macro motion, and safety-aware behavior aligned with applicable ISO standards.",
+  roleDescription:
+    "Architected the Pulsar real-time control & communication stack for a surgical robotics platform, owning the execution model, safety-aware motion gating, teleoperation behaviors, tool lifecycle handling, and observability used during bring-up, validation, and live demos.", // CHANGED
 
-    gallery: [
-      {
-        title: "Tool-Frame Motion & Orientation",
-        src: "/projects/articulus/tool-frame.png",
-        caption:
-          "Representative tool-frame control: Roll/Pitch/Yaw orientation control and linear insertion along the tool axis.",
-        group: "articulus-diagrams",
-      },
-      {
-        title: "Tool Swap / Instrument Lifecycle",
-        src: "/projects/articulus/tool-swap.png",
-        caption:
-          "State flow for tool attach/identify, parameter load, limit updates, and safely re-enabling control after a swap.",
-        group: "articulus-diagrams",
-      },
-      {
-        title: "Safety & Limits Management",
-        src: "/projects/articulus/safety-limits.png",
-        caption:
-          "Layered safety concept: software-defined soft limits + fault monitoring + hardware-enforced hard limits / shutdown paths.",
-        group: "articulus-diagrams",
-      },
+  systemOverview:
+    "Multi-DOF teleoperated surgical robotics platform supporting tool-frame motion (RPY + insertion), instrument swaps, and safety-aware real-time operation under strict latency and reliability constraints. Pulsar (my architecture) emphasized deterministic execution, separation of concerns, and observability.", // CHANGED (optional but good)
 
-      {
-        title: "System Architecture (Representative)",
-        src: "/projects/articulus/SoftwareArchitecture.jpg",
-        caption:
-          "High-level control + communication architecture (representative; non-proprietary).",
-      },
-      {
-        title: "Bring-up / Debug Context",
-        src: "/projects/articulus/workflow.jpg",
-        caption: "Personal workspace photo.",
-      },
-    ],
+  problem:
+    "Architect deterministic real-time control and communication pipelines for a multi-DOF surgical robotics platform, supporting tool-frame orientation and insertion control (RPY + linear tool-axis motion), dynamic instrument swaps, teleoperated micro/macro motion, and safety-aware behavior aligned with applicable ISO standards.",
 
-    approach: [
-      "Architected and implemented the core real-time software pipeline spanning encoder feedback ingestion, synchronized control and planning loops, and deterministic actuator command execution",
-      "Designed multithreaded real-time execution models with explicit scheduling and timing guarantees for control, communication, and monitoring tasks",
-      "Integrated DDS-based communication for low-latency, reliable data exchange between distributed robotic components",
-      "Implemented safety and constraint handling (hard limits, soft limits, saturation, fault responses) informed by applicable ISO and medical robotics safety standards",
-      "Designed coordinated motion strategies supporting teleoperated micro- and macro-scale movements on a multi-axis robotic system",
-      "Implemented tool-frame motion control supporting roll, pitch, yaw orientation and linear insertion along the tool axis",
-      "Integrated kinematics (FK/IK) into teleoperation, instrument tracking, and trajectory execution workflows",
-      "Designed and tuned PID-based joint controllers for stable tracking under real hardware constraints",
-      "Integrated instrument tracking into the real-time control pipeline for tool-aware motion, safety enforcement, and operator feedback",
-      "Designed tool lifecycle handling for dynamic instrument attachment and swap events, including tool identification, frame updates, safety re-initialization, and control pipeline reconfiguration",
-      "Developed observability tooling including high-frequency data logging and IMGUI-based dashboards for bring-up, debugging, and validation",
-    ],
+  gallery: [
+    {
+      title: "System Architecture (Representative)",
+      src: "/projects/articulus/SoftwareArchitecture.jpg",
+      caption:
+        "High-level control and communication architecture (representative and non-proprietary).",
+    },
+    {
+      title: "Tool-Frame Motion & Orientation",
+      src: "/projects/articulus/tool-frame.png",
+      caption:
+        "Representative tool-frame control: Roll/Pitch/Yaw orientation and linear insertion along tool axis.",
+      group: "articulus-diagrams",
+    },
+    {
+      title: "Tool Swap / Instrument Lifecycle",
+      src: "/projects/articulus/tool-swap.png",
+      caption:
+        "State flow for tool attach/identify, parameter load, limit updates, and safely re-enabling control after a swap.",
+      group: "articulus-diagrams",
+    },
+    {
+      title: "Safety & Limits Management",
+      src: "/projects/articulus/safety-limits.png",
+      caption:
+        "Layered safety: soft limits, fault monitoring, and hardware-enforced hard limits/shutdown paths.",
+      group: "articulus-diagrams",
+    },
+    {
+      title: "Bring-up / Debug Context",
+      src: "/projects/articulus/workflow.jpg",
+      caption:
+        "Workspace context used during system bring-up and validation.",
+    },
+  ],
 
-    results: [
-      "Predictable, deterministic system behavior during demos and validation",
-      "Safe handling of dynamic tool swaps without loss of control or teleoperation continuity",
-      "Improved bring-up and debug cycles through integrated logging and visualization tools",
-      "Reduced hardware risk through simulation-first validation and staged deployment",
-    ],
+  approach: [
+    "Architected Pulsar’s core real-time pipeline: feedback ingestion → synchronized control loops → deterministic actuation", // CHANGED (small)
+    "Designed multithreaded execution models with explicit scheduling and timing guarantees",
+    "Integrated DDS communication for low-latency, reliable exchange between robotic subsystems",
+    "Implemented safety and constraint handling: limits, saturation, fault responses, standards-aware workflows",
+    "Built tool-frame motion control (RPY + insertion) and integrated FK/IK into teleop + tracking pipelines",
+    "Designed tool lifecycle handling for instrument swaps: identification, frame updates, safety re-init, pipeline reconfig",
+    "Built observability: high-rate logging + IMGUI dashboards for bring-up/debug/validation",
+  ],
 
-    bullets: [
-      "End-to-end ownership of real-time control, communication, and safety-aware motion pipelines for surgical robotics",
-      "Multi-DOF coordinated motion with micro/macro motion decomposition under teleoperation",
-      "Tool-frame motion control supporting RPY orientation and linear tool-axis insertion",
-      "Dynamic instrument tracking and tool swap handling with safe pipeline re-initialization",
-      "Deterministic multithreaded execution with explicit real-time scheduling guarantees",
-      "DDS-based low-latency communication across distributed robotic subsystems",
-      "Standards-aware development aligned with applicable ISO safety requirements",
-    ],
-  },
+  ownership: [
+    "Architecture ownership of Pulsar real-time scheduling, determinism, and loop timing", // CHANGED
+    "Teleoperation behavior + tool-frame motion pipeline",
+    "FK/IK integration for instrument tracking and motion execution",
+    "Safety constraints, fault responses, and lifecycle re-initialization",
+    "Observability tooling (logging + dashboards) for validation and demos",
+  ],
 
+  results: [
+    "~1–3 ms control-cycle compute budget for core control tasks under RT scheduling",
+    "~22–26 ms end-to-end command → motion latency for improved teleop responsiveness",
+    "Safe dynamic instrument swaps without losing control continuity",
+    "Faster bring-up/debug via integrated logging and visualization tooling",
+  ],
+
+  bullets: [
+    "Architected Pulsar: the real-time control + communication + safety-aware motion stack for surgical robotics", // CHANGED
+    "Tool-frame motion (RPY + insertion), teleop micro/macro behaviors, and lifecycle handling",
+    "Deterministic multithreaded execution with RT scheduling and observability",
+    "DDS-based low-latency comms across distributed robot subsystems",
+  ],
+},
+
+
+  // =========================
+  // SELECTED (Tier 2)
+  // =========================
   {
     slug: "sae-baja",
-    title: "SAE BAJA (Team / Vehicle Build)",
-    subtitle: "End-to-end mechanical + systems work under competition constraints",
+    title: "SAE BAJA — Vehicle Build",
+    subtitle: "End-to-end systems thinking under real competition constraints",
     year: "2021–2023",
-    tier: 1,
-    tags: ["Systems", "Design", "Testing", "Leadership"],
+    tier: 2,
+    tags: ["Systems", "Integration", "Testing", "Leadership"],
+    // TODO: replace with real image when you add it
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
+
     problem:
       "Deliver a working vehicle system under timeline, cost, and reliability constraints.",
+
     approach: [
-      "Owned subsystem-level design decisions and integration planning",
+      "Owned subsystem design decisions and integration planning",
       "Iterated through build → test → failure → fix loops",
-      "Documented and communicated engineering tradeoffs to the team",
+      "Documented tradeoffs and communicated decisions under time pressure",
     ],
+
     results: [
-      "A competition-ready build with field testing and iteration cycles",
-      "Stronger system-level thinking: integration, reliability, debugging",
+      "Competition-ready build with iterative field testing",
+      "Stronger engineering instincts: integration, reliability, debugging",
     ],
+
     bullets: [
-      "Subsystem integration and build-test iteration cycles",
-      "Engineering tradeoffs under real constraints (time/cost/reliability)",
-      "Team communication + execution pressure experience",
+      "Subsystem integration + build-test iteration cycles",
+      "Engineering tradeoffs under time/cost/reliability constraints",
+      "Execution under pressure + team leadership",
     ],
   },
 
   {
     slug: "mujoco-simulation",
     title: "MuJoCo Manipulation Simulation",
-    subtitle: "Torque control, tracking, and task design in simulation",
+    subtitle: "Controller design, tracking, and repeatable evaluation in simulation",
     year: "2025",
-    tier: 1,
+    tier: 2,
     tags: ["MuJoCo", "Python", "Control", "Manipulation"],
+    // TODO: replace with a real sim screenshot
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
+
     problem:
       "Build stable manipulation behaviors in simulation and evaluate control/tracking performance.",
+
     approach: [
       "Implemented joint-space and task-space tracking controllers",
       "Built task environments + evaluation scripts for repeatability",
       "Studied tuning tradeoffs (Kp/Kd, limits, stability behavior)",
     ],
+
     results: [
-      "Stable tracking demos with repeatable evaluation setup",
-      "Clear controller tuning workflow + failure mode understanding",
+      "Stable tracking demos with a repeatable evaluation setup",
+      "Clear tuning workflow + failure mode understanding",
     ],
+
     bullets: [
       "Controller implementation + tuning workflow",
       "Task environments and evaluation scripts",
@@ -148,28 +165,64 @@ export const projects = [
 
   {
     slug: "ex-hand",
-    title: "Ex-Hand / Gesture-Controlled Hand (Build)",
-    subtitle: "Vision/gesture → commands → embedded actuation",
+    title: "Ex-Hand — Gesture-Controlled Hand",
+    subtitle: "Vision/gesture → commands → embedded actuation (prototype build)",
     year: "2025",
     tier: 2,
-    tags: ["Embedded", "Control", "Computer Vision", "Mechatronics"],
+    tags: ["Embedded", "Control", "Vision", "Mechatronics"],
+    // TODO: replace with a real hardware photo
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
+
     problem:
       "Convert human hand motion into smooth, stable actuator commands for a robotic mechanism.",
+
     approach: [
-      "Used vision/gesture signals to generate reference commands",
+      "Generated reference commands from vision/gesture signals",
       "Implemented feedback control + safety constraints",
-      "Iterated mechanical transmission + firmware integration",
+      "Iterated transmission + firmware integration for reliability",
     ],
+
     results: [
-      "Working prototype loop: perception → command → actuation",
-      "Improved stability through filtering + controller tuning",
+      "Working perception → command → actuation loop",
+      "Improved stability via filtering + controller tuning",
     ],
+
     bullets: [
       "Perception-to-control command pipeline",
       "Embedded integration + feedback control",
-      "Mechanical + firmware iteration for reliability",
+      "Mechanical + firmware iteration",
+    ],
+  },
+
+  {
+    slug: "pixhawk-px4",
+    title: "Pixhawk + PX4 Development",
+    subtitle: "Autopilot stack exploration, SITL, and control/system behavior",
+    year: "2025",
+    tier: 2,
+    tags: ["PX4", "Embedded", "Control", "Autonomy"],
+    hero: "/projects/_placeholder/hero.jpg",
+    links: { github: "", video: "" },
+
+    problem:
+      "Learn and extend an autopilot stack with a focus on control + system behavior.",
+
+    approach: [
+      "Studied PX4 architecture and module structure",
+      "Ran SITL workflows and parameter tuning experiments",
+      "Built small extensions for data capture and behavior checks",
+    ],
+
+    results: [
+      "Working PX4 dev workflow with simulation iteration",
+      "Better understanding of flight stack design and tuning constraints",
+    ],
+
+    bullets: [
+      "PX4 architecture understanding + dev workflow",
+      "Simulation-first testing approach",
+      "Control and parameter tuning experience",
     ],
   },
 
@@ -182,17 +235,21 @@ export const projects = [
     tags: ["Robotics", "Autonomy", "Integration"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
+
     problem:
       "Build a small robot system that can sense, decide, and act reliably in a home-like environment.",
+
     approach: [
       "Defined a minimal autonomy stack (sense → plan → act)",
       "Built integration paths for sensors and control logic",
       "Focused on reliability and repeatable behaviors",
     ],
+
     results: [
-      "Integrated prototype with structured system breakdown",
-      "Clear roadmap for expansion and robustness",
+      "Integrated prototype with a clear system breakdown",
+      "Roadmap for robustness and feature expansion",
     ],
+
     bullets: [
       "System integration mindset (not just code)",
       "Repeatable behavior testing",
@@ -200,33 +257,9 @@ export const projects = [
     ],
   },
 
-  {
-    slug: "pixhawk-px4",
-    title: "Pixhawk + PX4 Development",
-    subtitle: "Autopilot stack exploration and control integration",
-    year: "2025",
-    tier: 2,
-    tags: ["PX4", "Embedded", "Control", "Autonomy"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
-    problem:
-      "Learn and extend an autopilot stack with a focus on control + system behavior.",
-    approach: [
-      "Studied PX4 architecture and module structure",
-      "Ran simulations / SITL workflows and parameter tuning",
-      "Designed small extensions for data capture and behavior checks",
-    ],
-    results: [
-      "Working PX4 dev workflow with simulation iteration",
-      "Better understanding of flight stack design and tuning constraints",
-    ],
-    bullets: [
-      "PX4 architecture understanding + dev workflow",
-      "Simulation-first testing approach",
-      "Control and parameter tuning experience",
-    ],
-  },
-
+  // =========================
+  // EXPLORATORY / WIP (Tier 3)
+  // =========================
   {
     slug: "advanced-mechatronics",
     title: "Advanced Mechatronics Project (Planned)",
@@ -236,12 +269,17 @@ export const projects = [
     tags: ["Raspberry Pi", "Mechatronics", "Systems"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Design a complete mechatronic system that can be demonstrated end-to-end.",
+
+    problem:
+      "Design a complete mechatronic system that can be demonstrated end-to-end.",
+
     approach: [
       "Pick a scope you can finish fast (sensor → controller → actuator)",
-      "Document the full stack: design, electronics, firmware, tests",
+      "Document the stack: design, electronics, firmware, tests",
     ],
-    results: ["In progress — will become a polished end-to-end build writeup"],
+
+    results: ["In progress — will become a polished end-to-end writeup"],
+
     bullets: [
       "Planned full-stack build with clear deliverables",
       "Focus on demonstrable outcome + documentation",
@@ -257,29 +295,42 @@ export const projects = [
     tags: ["ML", "Python", "Modeling"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Build practical models and evaluate performance with clear metrics.",
+
+    problem:
+      "Build practical models and evaluate performance with clear metrics.",
+
     approach: [
       "Clean datasets and define evaluation metrics",
-      "Iterate models and baseline comparisons",
+      "Iterate models and compare baselines",
       "Communicate results clearly (plots + takeaways)",
     ],
+
     results: ["Documented ML experiments and repos on GitHub"],
-    bullets: ["Metric-driven evaluation", "Baselines + iteration mindset", "Clear reporting of results"],
+
+    bullets: ["Metric-driven evaluation", "Baselines + iteration", "Clear reporting"],
   },
 
   {
     slug: "missile-analysis",
     title: "High-Speed Missile Analysis (Research Work)",
-    subtitle: "Modeling/analysis work with engineering reporting",
+    subtitle: "Modeling/analysis with engineering reporting",
     year: "2022–2023",
     tier: 3,
     tags: ["Analysis", "Modeling", "Research"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "Analyze high-speed dynamics with defensible assumptions and clear outputs.",
-    approach: ["Structured assumptions, equations, and validation steps", "Produced plots / summaries for engineering readability"],
+
+    problem:
+      "Analyze high-speed dynamics with defensible assumptions and clear outputs.",
+
+    approach: [
+      "Structured assumptions, equations, and validation steps",
+      "Produced plots and summaries for engineering readability",
+    ],
+
     results: ["Research-style writeup and analysis workflow"],
-    bullets: ["Structured modeling + reporting", "Engineering-style documentation"],
+
+    bullets: ["Structured modeling + reporting", "Engineering documentation"],
   },
 
   {
@@ -291,9 +342,14 @@ export const projects = [
     tags: ["WIP", "Robotics", "Systems"],
     hero: "/projects/_placeholder/hero.jpg",
     links: { github: "", video: "" },
-    problem: "An ongoing build where the goal is to ship measurable progress and a clean story.",
+
+    problem:
+      "Ship measurable progress and a clean story while building in public.",
+
     approach: ["Weekly progress checkpoints", "Document decisions + failures + fixes"],
+
     results: ["In progress — will evolve into a polished project page"],
-    bullets: ["Work-in-progress with public documentation", "Iteration + learning captured cleanly"],
+
+    bullets: ["Work-in-progress with public documentation", "Iteration + learning captured"],
   },
 ];

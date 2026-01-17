@@ -1,4 +1,5 @@
 ---
+import Layout from "../../layouts/Layout.astro";
 import { projects } from "../../data/projects.js";
 
 export const prerender = true;
@@ -6,364 +7,444 @@ export const prerender = true;
 export function getStaticPaths() {
   return projects.map((p) => ({
     params: { slug: p.slug },
-    props: { project: p },
   }));
 }
 
-const { project } = Astro.props;
+const { slug } = Astro.params;
+const project = projects.find((p) => p.slug === slug);
 
-// Gallery helpers (for the 3 side-by-side diagrams)
-const diagrams = (project.gallery || []).filter((g) => g.group === "articulus-diagrams");
-const restGallery = (project.gallery || []).filter((g) => g.group !== "articulus-diagrams");
+if (!project) {
+  throw new Error(`Project not found: ${slug}`);
+}
 
-// Flatten all images for lightbox navigation
-const allImages = (project.gallery || []).map((g) => ({
-  src: g.src,
-  title: g.title || project.title,
-  caption: g.caption || "",
-}));
+const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
 ---
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{project.title} | Pavan</title>
-  <style>
-    body { margin:0; font-family: system-ui; background:#0b1220; color:#e6edf3; }
-    a { color:#58a6ff; }
-    .wrap { max-width:900px; margin:0 auto; padding:44px 20px; }
-    .panel { border:1px solid #1f2937; border-radius:16px; background:#0f172a; padding:16px; }
-    .muted { opacity:.78; }
-    .tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-    .tag { font-size:12px; padding:4px 8px; border-radius:999px; background:#111827; border:1px solid #243042; opacity:.92; }
-    h1 { margin:18px 0 8px; letter-spacing:-.02em; }
-    h2 { margin:22px 0 10px; }
-    ul { margin:10px 0 0; padding-left:18px; }
-    li { margin:8px 0; opacity:.95; line-height:1.55; }
+<Layout title={`${project.title} — Portfolio`} description={project.subtitle}>
+  <main class="page">
+    <a class="back" href="/">← Home</a>
 
-    /* Buttons */
-    .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    .pill { padding:8px 12px; border:1px solid #243042; border-radius:999px; background:#0f172a; color:#e6edf3; text-decoration:none; opacity:.92; }
-    .pill:hover { opacity:1; }
+    <header class="top">
+      <div>
+        <h1>{project.title}</h1>
+        <p class="sub">{project.subtitle}</p>
 
-    /* 3-up grid for diagrams */
-    .grid3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 12px;
-    }
-    @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
-
-    .card {
-      border: 1px solid #1f2937;
-      border-radius: 16px;
-      background: #0f172a;
-      padding: 12px;
-    }
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 14px;
-      opacity: 0.95;
-    }
-    .card img {
-      width: 100%;
-      height: 360px;
-      object-fit: contain;
-      border-radius: 14px;
-      border: 1px solid #1f2937;
-      background: #111827;
-      cursor: zoom-in;
-    }
-    .caption {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.78;
-      line-height: 1.45;
-    }
-
-    .stack { display:flex; flex-direction:column; gap:14px; }
-    .stack img {
-      width:100%;
-      border-radius:16px;
-      border:1px solid #1f2937;
-      background:#111827;
-      cursor: zoom-in;
-    }
-    .imgtitle { margin-top:8px; font-size:13px; opacity:.86; }
-    .imgcap { margin-top:4px; font-size:13px; opacity:.72; line-height:1.45; }
-
-    /* Lightbox */
-    .lb {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.72);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 9999;
-    }
-    .lb.open { display: flex; }
-    .lb-inner {
-      width: min(1100px, 96vw);
-      max-height: 92vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 10px;
-    }
-    .lb-top {
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 12px;
-      color:#e6edf3;
-      opacity:.95;
-    }
-    .lb-title { font-size: 14px; opacity:.9; }
-    .lb-actions { display:flex; gap: 8px; }
-    .lb-btn {
-      border:1px solid #243042;
-      background:#0f172a;
-      color:#e6edf3;
-      border-radius:999px;
-      padding:8px 12px;
-      cursor:pointer;
-      opacity:.92;
-      user-select:none;
-    }
-    .lb-btn:hover { opacity:1; }
-    .lb-imgwrap {
-      border:1px solid #1f2937;
-      border-radius:16px;
-      background:#0f172a;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-    }
-    .lb-img {
-      max-width: 100%;
-      max-height: 78vh;
-      object-fit: contain;
-      display:block;
-    }
-    .lb-cap {
-      font-size: 13px;
-      opacity:.78;
-      line-height:1.45;
-    }
-    .lb-nav {
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-    }
-    .lb-navbtn {
-      pointer-events:auto;
-      position:absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border:1px solid #243042;
-      background: rgba(15, 23, 42, .85);
-      color:#e6edf3;
-      cursor:pointer;
-      opacity:.92;
-    }
-    .lb-navbtn:hover { opacity:1; }
-    .lb-prev { left: 22px; }
-    .lb-next { right: 22px; }
-    @media (max-width: 700px) {
-      .lb-prev { left: 10px; }
-      .lb-next { right: 10px; }
-      .lb-navbtn { width: 40px; height: 40px; }
-    }
-  </style>
-</head>
-
-<body>
-  <main class="wrap">
-    <a href="/projects/" style="text-decoration:none;">← Back to Projects</a>
-
-    <h1>{project.title}</h1>
-    <div class="muted">{project.subtitle}</div>
-
-    <div class="btnrow">
-      <span class="pill">Tier {project.tier}</span>
-      <span class="pill">{project.year}</span>
-      {project.links?.github ? <a class="pill" href={project.links.github} target="_blank">GitHub</a> : null}
-      {project.links?.video ? <a class="pill" href={project.links.video} target="_blank">Video</a> : null}
-    </div>
-
-    <div class="tags">
-      {project.tags.map(t => <span class="tag">{t}</span>)}
-    </div>
-
-    <!-- No hero image on detail page -->
-
-    <h2>Problem</h2>
-    <div class="panel">{project.problem}</div>
-
-    {diagrams.length ? (
-      <>
-        <h2>Technical Diagrams & Workflow</h2>
-        <div class="grid3">
-          {diagrams.map((d) => (
-            <div class="card">
-              <h3>{d.title}</h3>
-              <img
-                src={d.src}
-                alt={d.title}
-                loading="lazy"
-                data-lb-src={d.src}
-                data-lb-title={d.title}
-                data-lb-caption={d.caption || ""}
-              />
-              {d.caption ? <div class="caption">{d.caption}</div> : null}
-            </div>
-          ))}
+        <div class="meta">
+          <span class="pill">{project.year}</span>
+          <span class="pill">Tier {project.tier}</span>
+          {project.role ? <span class="pill">{project.role}</span> : null}
         </div>
-      </>
+
+        <div class="links">
+          {project.links?.github ? (
+            <a class="btn" href={project.links.github} target="_blank">GitHub</a>
+          ) : null}
+
+          {project.links?.video ? (
+            <a class="btn" href={project.links.video} target="_blank">Video</a>
+          ) : null}
+
+          {project.links?.website ? (
+            <a class="btn" href={project.links.website} target="_blank" rel="noreferrer">
+              Company Website
+            </a>
+          ) : null}
+        </div>
+
+      </div>
+
+      <div class="hero">
+        {hasHero(project) ? (
+          <img src={project.hero} alt={project.title} loading="eager" />
+        ) : (
+          <div class="ph">Add hero image</div>
+        )}
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>What I built</h2>
+      <p class="txt">{project.systemOverview ?? project.problem ?? "—"}</p>
+    </section>
+
+    {project.problem ? (
+      <section class="section">
+        <h2>Problem</h2>
+        <p class="txt">{project.problem}</p>
+      </section>
     ) : null}
 
-    <h2>Approach</h2>
-    <div class="panel">
-      <ul>
-        {project.approach.map(a => <li>{a}</li>)}
-      </ul>
-    </div>
+    {project.approach?.length ? (
+      <section class="section">
+        <h2>Approach</h2>
+        <ul class="list">
+          {project.approach.map((x) => <li>{x}</li>)}
+        </ul>
+      </section>
+    ) : null}
 
-    <h2>Results</h2>
-    <div class="panel">
-      <ul>
-        {project.results.map(r => <li>{r}</li>)}
-      </ul>
-    </div>
+    {project.ownership?.length ? (
+      <section class="section">
+        <h2>Ownership</h2>
+        <ul class="list">
+          {project.ownership.map((x) => <li>{x}</li>)}
+        </ul>
+      </section>
+    ) : null}
 
-    <h2>Highlights</h2>
-    <div class="panel">
-      <ul>
-        {(project.bullets || []).map(b => <li>{b}</li>)}
-      </ul>
-    </div>
+    {project.results?.length ? (
+      <section class="section">
+        <h2>Results</h2>
+        <ul class="list">
+          {project.results.map((x) => <li><strong>{x}</strong></li>)}
+        </ul>
+      </section>
+    ) : null}
 
-    {restGallery.length ? (
-      <>
-        <h2>Additional Images</h2>
-        <div class="panel stack">
-          {restGallery.map((g) => (
-            <div>
-              <img
-                src={g.src}
-                alt={g.title || project.title}
-                loading="lazy"
-                data-lb-src={g.src}
-                data-lb-title={g.title || project.title}
-                data-lb-caption={g.caption || ""}
-              />
-              {g.title ? <div class="imgtitle">{g.title}</div> : null}
-              {g.caption ? <div class="imgcap">{g.caption}</div> : null}
-            </div>
+    {project.gallery?.length ? (
+      <section class="section">
+        <div class="galTop">
+          <h2 class="h2">Gallery</h2>
+          <div class="galCtrls">
+            <button class="galBtn" type="button" data-prev aria-label="Previous">←</button>
+            <button class="galBtn" type="button" data-next aria-label="Next">→</button>
+          </div>
+        </div>
+
+        <div class="galCarousel" data-carousel>
+          {project.gallery.map((g, i) => (
+            <button
+              class="galSlide"
+              type="button"
+              data-slide
+              data-src={g.src}
+              data-title={g.title}
+              data-caption={g.caption ?? ""}
+              aria-label={`Open image: ${g.title}`}
+            >
+              <img src={g.src} alt={g.title} loading="lazy" />
+              <div class="galMeta">
+                <div class="capT">{g.title}</div>
+                {g.caption ? <div class="capD">{g.caption}</div> : null}
+                <div class="capIdx">{i + 1} / {project.gallery.length}</div>
+              </div>
+            </button>
           ))}
         </div>
-      </>
+
+        <!-- LIGHTBOX -->
+        <div class="lightbox" data-lightbox aria-hidden="true">
+          <div class="lbBackdrop" data-close></div>
+
+          <div class="lbPanel" role="dialog" aria-modal="true" aria-label="Media viewer">
+            <button class="lbClose" type="button" data-close aria-label="Close">✕</button>
+
+            <div class="lbMedia">
+              <img class="lbImg" data-lb-img alt="" />
+            </div>
+
+            <div class="lbText">
+              <div class="lbTitle" data-lb-title></div>
+              <div class="lbCaption" data-lb-caption></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    ) : null}
+
+    {project.tags?.length ? (
+      <section class="section">
+        <h2>Stack</h2>
+        <div class="tags">
+          {project.tags.map((t) => <span class="tag">{t}</span>)}
+        </div>
+      </section>
     ) : null}
   </main>
 
-  <!-- Lightbox Overlay -->
-  <div class="lb" id="lb" aria-hidden="true">
-    <div class="lb-inner" role="dialog" aria-modal="true" aria-label="Image viewer">
-      <div class="lb-top">
-        <div class="lb-title" id="lbTitle"></div>
-        <div class="lb-actions">
-          <button class="lb-btn" id="lbDownload" type="button">Open</button>
-          <button class="lb-btn" id="lbClose" type="button">Close</button>
-        </div>
-      </div>
+  <style>
+    .page{max-width:980px;margin:0 auto;padding:10px 0 40px}
 
-      <div class="lb-imgwrap">
-        <img class="lb-img" id="lbImg" alt="" />
-        <div class="lb-nav">
-          <button class="lb-navbtn lb-prev" id="lbPrev" type="button">←</button>
-          <button class="lb-navbtn lb-next" id="lbNext" type="button">→</button>
-        </div>
-      </div>
-
-      <div class="lb-cap" id="lbCap"></div>
-    </div>
-  </div>
-
-  <script>
-    // Build image list from the data injected by Astro
-    const IMAGES = JSON.parse(
-      decodeURIComponent("{encodeURIComponent(JSON.stringify(allImages))}")
-    );
-
-    const lb = document.getElementById("lb");
-    const lbImg = document.getElementById("lbImg");
-    const lbTitle = document.getElementById("lbTitle");
-    const lbCap = document.getElementById("lbCap");
-    const lbClose = document.getElementById("lbClose");
-    const lbPrev = document.getElementById("lbPrev");
-    const lbNext = document.getElementById("lbNext");
-    const lbDownload = document.getElementById("lbDownload");
-
-    let idx = 0;
-
-    function openAt(i) {
-      idx = (i + IMAGES.length) % IMAGES.length;
-      const item = IMAGES[idx];
-      lb.classList.add("open");
-      lb.setAttribute("aria-hidden", "false");
-      lbImg.src = item.src;
-      lbImg.alt = item.title || "Image";
-      lbTitle.textContent = item.title || "";
-      lbCap.textContent = item.caption || "";
-      lbDownload.onclick = () => window.open(item.src, "_blank");
+    .back{
+      display:inline-block;margin:6px 0 14px;
+      font-size:13px;opacity:.75;text-decoration:none;color:var(--fg)
     }
 
-    function closeLb() {
-      lb.classList.remove("open");
-      lb.setAttribute("aria-hidden", "true");
-      lbImg.src = "";
+    h1,h2{letter-spacing:-.03em}
+    h1{margin:0 0 8px;font-size:40px;line-height:1.05}
+    h2{margin:0 0 10px;font-size:18px}
+    .sub{margin:0 0 10px;color:var(--muted);max-width:80ch}
+
+    .top{display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:start}
+
+    .hero{
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:var(--bg);
+      box-shadow:var(--shadow)
+    }
+    .hero img{
+      width:100%;
+      height:260px;
+      object-fit:cover; /* hero: cover is best */
+      display:block;
+      background:var(--card)
+    }
+    .ph{height:260px;display:grid;place-items:center;background:var(--card);color:var(--muted)}
+
+    .meta{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    .pill{
+      font-size:11px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:4px 8px;
+      color:var(--fg);
+      background:var(--card);
     }
 
-    function next() { openAt(idx + 1); }
-    function prev() { openAt(idx - 1); }
+    .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .btn{
+      font-size:13px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:8px 10px;
+      background:var(--bg);
+      color:var(--fg);
+      text-decoration:none
+    }
+    .btn:hover{border-color:rgba(127,127,127,.45)}
 
-    // Map src -> index
-    const srcToIndex = new Map(IMAGES.map((it, i) => [it.src, i]));
+    .section{margin-top:22px}
+    .txt{color:var(--fg);opacity:.92;max-width:85ch}
+    .list{margin:0;padding-left:18px;color:var(--fg);opacity:.92}
+    .list li{margin:8px 0}
 
-    // Click handler for any image that has data-lb-src
-    document.addEventListener("click", (e) => {
-      const t = e.target;
-      if (t && t.matches && t.matches("img[data-lb-src]")) {
-        const src = t.getAttribute("data-lb-src");
-        const i = srcToIndex.has(src) ? srcToIndex.get(src) : 0;
-        openAt(i);
-      }
-    });
+    /* STACK TAGS */
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .tag{
+      font-size:12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:5px 9px;
+      background:var(--card);
+      color:var(--fg);
+      opacity:.95
+    }
 
-    // Close when clicking outside the dialog content
-    lb.addEventListener("click", (e) => {
-      if (e.target === lb) closeLb();
-    });
+    /* ===== GALLERY CAROUSEL (ROTATING + LIGHTBOX) ===== */
+    .h2{ margin:0; }
 
-    lbClose.addEventListener("click", closeLb);
-    lbNext.addEventListener("click", next);
-    lbPrev.addEventListener("click", prev);
+    .galTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
 
-    // Keyboard support
-    document.addEventListener("keydown", (e) => {
-      if (!lb.classList.contains("open")) return;
-      if (e.key === "Escape") closeLb();
-      if (e.key === "ArrowRight") next();
-      if (e.key === "ArrowLeft") prev();
-    });
+    .galCtrls{ display:flex; gap:8px; }
+    .galBtn{
+      width:38px;height:38px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--card);
+      color:var(--fg);
+      cursor:pointer;
+      transition:transform .15s ease, border-color .15s ease;
+    }
+    .galBtn:hover{ transform: translateY(-1px); border-color: rgba(127,127,127,.45); }
+
+    .galCarousel{ position:relative; }
+
+    .galSlide{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:var(--bg);
+      box-shadow:var(--shadow);
+      padding:0;
+      display:none;           /* only active shows */
+      cursor: zoom-in;
+      text-align:left;
+      color:inherit;
+    }
+    .galSlide.isActive{ display:block; }
+
+    .galSlide img{
+      width:100%;
+      height:430px;
+      display:block;
+      background:var(--card);
+      object-fit:contain;     /* diagrams look correct */
+    }
+
+    .galMeta{
+      padding:12px 14px 14px;
+      border-top:1px solid var(--line);
+    }
+    .capT{font-weight:900;font-size:13px;margin-bottom:4px}
+    .capD{font-size:12px;color:var(--muted)}
+    .capIdx{font-size:12px;color:var(--muted);margin-top:8px;opacity:.8}
+
+    /* LIGHTBOX */
+    .lightbox{
+      position:fixed;
+      inset:0;
+      display:none;
+      z-index:9999;
+    }
+    .lightbox.show{ display:block; }
+
+    .lbBackdrop{
+      position:absolute; inset:0;
+      background: rgba(0,0,0,.55);
+    }
+
+    .lbPanel{
+      position:absolute;
+      inset: 5vh 4vw;
+      border-radius:18px;
+      background: var(--bg);
+      border:1px solid var(--line);
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .lbClose{
+      position:absolute;
+      top:10px; right:10px;
+      width:38px; height:38px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: var(--card);
+      color: var(--fg);
+      cursor:pointer;
+      z-index:2;
+    }
+
+    .lbMedia{
+      flex:1;
+      display:grid;
+      place-items:center;
+      padding: 18px;
+      background: var(--card);
+    }
+
+    .lbImg{
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+      background: var(--bg);
+    }
+
+    .lbText{
+      padding: 12px 14px 14px;
+      border-top:1px solid var(--line);
+    }
+    .lbTitle{ font-weight:900; }
+    .lbCaption{ color:var(--muted); margin-top:4px; font-size:13px; line-height:1.45; }
+
+    html.lbOpen, html.lbOpen body{ overflow:hidden; }
+
+    @media (max-width:980px){
+      .top{grid-template-columns:1fr}
+      .hero img,.ph{height:240px}
+      .galSlide img{ height:260px; }
+      .lbPanel{ inset: 4vh 3vw; }
+    }
+  </style>
+
+  <script is:inline>
+    (() => {
+      const carousel = document.querySelector('[data-carousel]');
+      if (!carousel) return;
+
+      const slides = Array.from(carousel.querySelectorAll('[data-slide]'));
+      const prev = document.querySelector('[data-prev]');
+      const next = document.querySelector('[data-next]');
+
+      let index = 0;
+      let timer = null;
+
+      const show = (i) => {
+        index = (i + slides.length) % slides.length;
+        slides.forEach((s, k) => s.classList.toggle('isActive', k === index));
+      };
+
+      const start = () => {
+        stop();
+        timer = setInterval(() => show(index + 1), 4500);
+      };
+
+      const stop = () => {
+        if (timer) clearInterval(timer);
+        timer = null;
+      };
+
+      prev?.addEventListener('click', () => { show(index - 1); start(); });
+      next?.addEventListener('click', () => { show(index + 1); start(); });
+
+      carousel.addEventListener('mouseenter', stop);
+      carousel.addEventListener('mouseleave', start);
+
+      // Lightbox wiring
+      const lb = document.querySelector('[data-lightbox]');
+      const lbImg = document.querySelector('[data-lb-img]');
+      const lbTitle = document.querySelector('[data-lb-title]');
+      const lbCaption = document.querySelector('[data-lb-caption]');
+      const closeEls = lb ? lb.querySelectorAll('[data-close]') : [];
+
+      const openLB = (src, title, caption) => {
+        if (!lb || !lbImg) return;
+
+        const isGif = /\.gif(\?.*)?$/i.test(src);
+        lbImg.src = isGif ? `${src}${src.includes('?') ? '&' : '?'}t=${Date.now()}` : src;
+        lbImg.alt = title || 'Gallery media';
+        lbTitle.textContent = title || '';
+        lbCaption.textContent = caption || '';
+
+        lb.classList.add('show');
+        lb.setAttribute('aria-hidden', 'false');
+        document.documentElement.classList.add('lbOpen');
+      };
+
+      const closeLB = () => {
+        if (!lb || !lbImg) return;
+        lb.classList.remove('show');
+        lb.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('lbOpen');
+        lbImg.src = '';
+      };
+
+      slides.forEach((s) => {
+        s.addEventListener('click', () => {
+          openLB(s.dataset.src, s.dataset.title, s.dataset.caption);
+        });
+      });
+
+      closeEls.forEach((el) => el.addEventListener('click', closeLB));
+
+      window.addEventListener('keydown', (e) => {
+        const lbOpen = document.documentElement.classList.contains('lbOpen');
+        if (!lbOpen) {
+          if (e.key === 'ArrowLeft') { show(index - 1); start(); }
+          if (e.key === 'ArrowRight') { show(index + 1); start(); }
+          return;
+        }
+
+        if (e.key === 'Escape') closeLB;
+        if (e.key === 'ArrowLeft') show(index - 1);
+        if (e.key === 'ArrowRight') show(index + 1);
+      });
+
+      // Init
+      show(0);
+      start();
+    })();
   </script>
-</body>
-</html>
+</Layout>

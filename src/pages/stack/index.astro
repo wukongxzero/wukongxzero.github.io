@@ -1,0 +1,238 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const CATS = [
+  {
+    key: "programming",
+    label: "Programming",
+    icon: "{}",
+    items: [
+      { title: "C++", desc: "Real-time oriented robotics software, control loops, tooling.", tags: ["C++", "Perf", "Systems"] },
+      { title: "Python", desc: "Simulation tooling, data + evaluation scripts, prototyping.", tags: ["Python", "Tools"] },
+      { title: "MATLAB", desc: "Control analysis, modeling, simulation validation.", tags: ["MATLAB", "Control"] },
+    ],
+  },
+  {
+    key: "robotics",
+    label: "Robotics & Control Systems",
+    icon: "⚙️",
+    items: [
+      { title: "Kinematics", desc: "FK/IK, frames, Jacobians, tool-frame motion.", tags: ["FK/IK", "Frames"] },
+      { title: "PID / PD Control", desc: "Tracking controllers, tuning, stability tradeoffs.", tags: ["Control", "Tuning"] },
+      { title: "Teleoperation", desc: "Low-latency command → motion pipelines.", tags: ["Teleop", "Latency"] },
+      { title: "Kalman Filtering", desc: "State estimation from noisy measurements.", tags: ["Estimation"] },
+    ],
+  },
+  {
+    key: "mcu",
+    label: "Microcontrollers & Boards",
+    icon: "🧩",
+    items: [
+      { title: "MCUs", desc: "Sensors + actuators + timing constraints.", tags: ["Embedded"] },
+      { title: "CAN Bus", desc: "Deterministic comms patterns for robotics subsystems.", tags: ["CAN", "Comms"] },
+    ],
+  },
+  {
+    key: "sensors",
+    label: "Sensors & Electronics",
+    icon: "🔎",
+    items: [
+      { title: "Intel RealSense", desc: "Depth pipelines for perception & robotics apps.", tags: ["Depth"] },
+      { title: "Encoders", desc: "Feedback integration for closed-loop control.", tags: ["Feedback"] },
+    ],
+  },
+  {
+    key: "sim",
+    label: "Simulation & Tooling",
+    icon: "🧪",
+    items: [
+      { title: "MuJoCo", desc: "Manipulation tasks, torque control, evaluation loops.", tags: ["MuJoCo"] },
+      { title: "Gazebo", desc: "Robot simulation for integration workflows.", tags: ["Gazebo"] },
+      { title: "PyBullet", desc: "Fast prototyping & baseline sims.", tags: ["PyBullet"] },
+    ],
+  },
+  {
+    key: "tools",
+    label: "Specialized Tools",
+    icon: "🛠️",
+    items: [
+      { title: "Logging & Debug", desc: "High-rate logs + dashboards for bring-up.", tags: ["Observability"] },
+      { title: "Git / Linux", desc: "Dev workflows, reproducibility, tooling.", tags: ["Git", "Linux"] },
+    ],
+  },
+];
+---
+
+<Layout title="Tools & Stack — Pavan" description="Tools, technologies, and concepts I use in robotics">
+  <main class="wrap">
+    <a class="back" href="/">← Home</a>
+
+    <header class="head">
+      <h1>Tools & Tech Stack</h1>
+      <p class="sub">Select a category to learn more.</p>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="Stack categories">
+      {CATS.map((c, i) => (
+        <button
+          class={`tab ${i === 0 ? "active" : ""}`}
+          type="button"
+          data-tab={c.key}
+          role="tab"
+          aria-selected={i === 0 ? "true" : "false"}
+        >
+          <span class="tabIcon">{c.icon}</span>
+          {c.label}
+        </button>
+      ))}
+    </div>
+
+    {CATS.map((c, i) => (
+      <section class={`panel ${i === 0 ? "show" : ""}`} data-panel={c.key} role="tabpanel">
+        <div class="grid">
+          {c.items.map((it) => (
+            <button
+              class="card"
+              type="button"
+              data-open
+              data-title={it.title}
+              data-desc={it.desc}
+              data-tags={it.tags?.join(",") ?? ""}
+            >
+              <div class="cardTop">
+                <div class="cardTitle">{it.title}</div>
+              </div>
+              <div class="cardDesc">{it.desc}</div>
+              <div class="tags">
+                {(it.tags ?? []).slice(0, 4).map((t) => <span class="tag">{t}</span>)}
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <!-- Modal -->
+    <div class="modal" data-modal aria-hidden="true">
+      <div class="backdrop" data-close></div>
+      <div class="sheet" role="dialog" aria-modal="true" aria-label="Stack detail">
+        <button class="x" type="button" data-close aria-label="Close">✕</button>
+        <div class="mTitle" data-m-title></div>
+        <div class="mDesc" data-m-desc></div>
+        <div class="mTags" data-m-tags></div>
+        <p class="hint muted">Tip: you can later attach a GIF or image per item.</p>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 20px 60px}
+    .back{display:inline-block;margin:8px 0 14px;font-size:13px;opacity:.75;text-decoration:none;color:var(--fg)}
+    h1{font-size:34px;letter-spacing:-.03em;margin:0 0 6px}
+    .sub{opacity:.8;margin:0 0 14px;max-width:70ch}
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px}
+    .tab{
+      display:flex;gap:10px;align-items:center;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid var(--line);background:var(--bg);color:var(--fg);
+      cursor:pointer;opacity:.82;
+      transition:opacity .15s ease, transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .tab:hover{opacity:1;transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,.10)}
+    .tab.active{opacity:1;border-color:rgba(240,185,75,.55);box-shadow:0 10px 28px rgba(0,0,0,.14)}
+    .tabIcon{width:24px;display:inline-grid;place-items:center;font-weight:900}
+
+    .panel{display:none}
+    .panel.show{display:block}
+
+    .grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+    @media (max-width:1100px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:700px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:460px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      text-align:left;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:var(--bg);
+      padding:14px;
+      min-height:160px;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      border-color:rgba(127,127,127,.45);
+      box-shadow:0 20px 50px rgba(0,0,0,.18);
+    }
+    .cardTitle{font-weight:900;letter-spacing:-.01em}
+    .cardDesc{margin-top:8px;opacity:.75;font-size:13px;line-height:1.45}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .tag{font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;z-index:80}
+    .modal.show{display:block}
+    .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.42)}
+    .sheet{
+      position:absolute;left:50%;top:50%;
+      transform:translate(-50%,-50%);
+      width:min(780px,92vw);
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:var(--bg);
+      box-shadow:0 40px 100px rgba(0,0,0,.35);
+      padding:18px;
+    }
+    .x{position:absolute;right:12px;top:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:6px 10px;cursor:pointer}
+    .mTitle{font-weight:900;font-size:20px;margin-bottom:8px}
+    .mDesc{opacity:.82;line-height:1.6}
+    .mTags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .hint{margin-top:12px;font-size:12px}
+    .muted{color:var(--muted)}
+  </style>
+
+  <script is:inline>
+    const tabs = document.querySelectorAll("[data-tab]");
+    const panels = document.querySelectorAll("[data-panel]");
+
+    const setActive = (key) => {
+      tabs.forEach(t => {
+        const on = t.dataset.tab === key;
+        t.classList.toggle("active", on);
+        t.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      panels.forEach(p => p.classList.toggle("show", p.dataset.panel === key));
+    };
+
+    tabs.forEach(t => t.addEventListener("click", () => setActive(t.dataset.tab)));
+
+    // Modal
+    const modal = document.querySelector("[data-modal]");
+    const titleEl = document.querySelector("[data-m-title]");
+    const descEl = document.querySelector("[data-m-desc]");
+    const tagsEl = document.querySelector("[data-m-tags]");
+
+    const open = (btn) => {
+      titleEl.textContent = btn.dataset.title || "";
+      descEl.textContent = btn.dataset.desc || "";
+      const tags = (btn.dataset.tags || "").split(",").map(s => s.trim()).filter(Boolean);
+      tagsEl.innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join("");
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    };
+
+    const close = () => {
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    document.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => open(b)));
+    document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", close));
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+  </script>
+</Layout>
