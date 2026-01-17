@@ -179,10 +179,10 @@ export const projects = [
 
 
     systemOverview:
-      "Gas Monkeys Racing competed in SAE BAJA, MEGA-ATV, and karting events. I worked across multiple vehicle generations with primary ownership of suspension systems and vehicle dynamics decisions.",
+      "Gas Monkeys Racing competed in SAE BAJA 2021, MEGA-ATV, and karting events. I worked across multiple vehicle generations with primary ownership of suspension systems and vehicle dynamics decisions.",
 
     approach: [
-      "Defined suspension geometry and dynamics targets using Lotus Shark and Milliken vehicle dynamics principles",
+      "Defined suspension geometry and dynamics targets using Lotus Shark,MATLAB and Milliken vehicle dynamics principles",
       "Applied DFMEA-style risk analysis to identify and mitigate high-risk suspension failure modes",
       "Iterated designs based on field testing, driver feedback, and manufacturability constraints",
       "Used Asana to track issues, design decisions, and cross-functional progress",
@@ -223,16 +223,130 @@ export const projects = [
     ],
   },
 
-  {
-    slug: "mujoco-simulation",
-    title: "Robotic Arm Control & Evaluation (MuJoCo)",
-    subtitle: "Controller design, tracking, and repeatable evaluation in simulation",
-    year: "2025",
-    tier: 2,
-    tags: ["MuJoCo", "Python", "Control", "Manipulation"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
+ {
+  slug: "mujoco-simulation",
+  title: "MuJoCo UR10e — Kinematics & Control + Mid-Air Intercept",
+  subtitle:
+    "FK/IK + Jacobian-based velocity kinematics in MuJoCo, plus offline torque planning for a mid-air 'Fruit Ninja' intercept task",
+  year: "2025",
+  tier: 2,
+  tags: [
+    "MuJoCo",
+    "Python",
+    "UR10e",
+    "Kinematics",
+    "FK/IK",
+    "Jacobian",
+    "Control",
+    "Planning",
+    "Torque Control",
+  ],
+
+  // Pick your cleanest overall gif frame/screenshot later
+  hero: "/projects/mujoco/robot_dynamics_simulation (4).gif",
+  heroFit: "cover",
+
+  links: {
+    github: "", // optional
+    video: "",  // optional (youtube/drive)
+    // Optional: host PDFs publicly by putting them in /public/projects/mujoco/
+    // and then using a normal link button (requires slug.astro to render extra buttons
+    // if you want a dedicated "Report" button; otherwise you can leave these out)
+    // reportKinematics: "/projects/mujoco/UR10e_Report_Section.pdf",
+    // reportFruit: "/projects/mujoco/Extra-Credit-Report_Pavan_Kushal_Velagaleti.pdf",
   },
+
+  confidentialityNote: "",
+
+  // This is the “two pillars” story in one paragraph.
+  systemOverview:
+    "Two-part MuJoCo UR10e simulation project: (1) a kinematics/control suite implementing DH forward kinematics, numerical inverse kinematics, Jacobian-based forward velocity kinematics, and pseudoinverse inverse velocity kinematics; and (2) a 'Fruit Ninja' mid-air interception task solved via offline torque planning with open-loop torque replay under fixed simulation constraints.",
+
+  problem:
+    "Build a UR10e simulation workflow that is both (a) mathematically correct for kinematics/velocity kinematics, and (b) realistic under constraints when executing a dynamic interception task using offline, open-loop torque replay.",
+
+  approach: [
+    // --- Part A: FK/IK/Jacobian ---
+    "Forward kinematics using standard DH formulation and multiplying six joint transforms to get base→end-effector pose",
+    "Inverse kinematics (position) using a numerical nonlinear solver (scipy.optimize.least_squares) with multiple initial guesses for convergence",
+    "Forward velocity kinematics using the linear part of the geometric Jacobian (3×6) to map joint rates → end-effector linear velocity",
+    "Inverse velocity kinematics using the Jacobian pseudoinverse to obtain minimum-norm joint velocities for desired end-effector velocities",
+
+    // --- Part B: Fruit Ninja / Mid-air intercept ---
+    "Offline torque planning in MuJoCo: predicted fruit trajectories with a ballistic model under gravity, selected intercept points, and generated torques offline",
+    "Task-space PD mapped to joint torques via Jacobian transpose, replayed open-loop during execution",
+    "Improved robustness by arriving slightly early at intercept points and holding position; prevented retargeting already-intercepted fruits; aligned offline rollout timing with execution timing",
+  ],
+
+  decisions: [
+    {
+      title: "Numerical IK over analytic IK",
+      detail:
+        "Used least-squares numerical IK (analytic IK is long and not required); multiple initial guesses improved convergence.",
+    },
+    {
+      title: "Jacobian methods for velocity kinematics",
+      detail:
+        "Used the geometric Jacobian for forward velocity kinematics and pseudoinverse for minimum-norm inverse velocity solutions in a redundant 3×6 setup.",
+    },
+    {
+      title: "Robustness strategy for open-loop torque replay",
+      detail:
+        "Open-loop replay is timing-sensitive, so the planner biases early-arrival + hold rather than perfect tracking at a single instant.",
+    },
+  ],
+
+  ownership: [
+    "DH FK implementation and validation against MuJoCo behavior",
+    "Numerical IK pipeline (least-squares) and convergence strategy (multiple initial guesses)",
+    "Jacobian computation and velocity kinematics (forward + pseudoinverse inverse)",
+    "Offline planner for torque generation + execution alignment for the interception task",
+    "Jupyter-based reporting, plots, and experiment documentation",
+  ],
+
+  results: [
+    "FK matched MuJoCo simulation accurately; numerical IK reached most random targets reliably.",
+    "Velocity predictions matched simulated motion; pseudoinverse behaved as expected including near singularities.",
+    "For the interception task: all fruits spawned within the fixed simulation window were successfully intercepted (6 spawned during runtime).",
+  ],
+
+  bullets: [
+    "DH FK + numerical IK (least_squares) validated against MuJoCo",
+    "Jacobian velocity kinematics + pseudoinverse inverse velocity (minimum-norm)",
+    "Offline torque planning for mid-air intercept with open-loop torque replay and timing-robust strategy",
+  ],
+
+  // ===== Gallery (5 GIFs) =====
+  // Rename these filenames to match yours exactly.
+  gallery: [
+    {
+      title: "FK Validation in MuJoCo",
+      src: "/projects/mujoco/ur10e_FK_position (1).gif",
+      caption: "Forward kinematics consistency check against MuJoCo visualization.",
+    },
+    {
+      title: "Numerical IK Reaching Targets",
+      src: "/projects/mujoco/ur10e_FK_velocity (1).gif",
+      caption: "Numerical IK (least_squares) reaching random targets with improved convergence.",
+    },
+    {
+      title: "Jacobian Velocity Kinematics",
+      src: "/projects/mujoco/ur10e_IK_position (1).gif",
+      caption: "End-effector velocity from joint velocities using Jacobian.",
+    },
+    {
+      title: "Inverse Velocity via Pseudoinverse",
+      src: "/projects/mujoco/ur10e_IK_velocity (1).gif",
+      caption: "Minimum-norm joint velocities using Jacobian pseudoinverse (3×6 redundancy).",
+    },
+    {
+      title: "Fruit Ninja — Mid-Air Intercept",
+      src: "/projects/mujoco/robot_dynamics_simulation (4).gif",
+      caption: "Offline torque planning + open-loop replay; timing-robust early-arrival + hold strategy.",
+    },
+  ],
+},
+
 
   {
     slug: "ex-hand",
