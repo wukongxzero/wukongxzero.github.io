@@ -146,13 +146,28 @@ const heroFit = project.heroFit ?? "cover";
               type="button"
               data-slide
               data-src={g.src}
-              data-title={g.title}
+              data-title={g.title ?? ""}
               data-caption={g.caption ?? ""}
-              aria-label={`Open image: ${g.title}`}
+              data-type={g.type ?? ""}
+              aria-label={`Open media ${i + 1}`}
             >
-              <img src={g.src} alt={g.title} loading="lazy" />
+              {g.type === "video" ? (
+                <video
+                  controls
+                  playsinline
+                  preload="metadata"
+                  poster={g.poster}
+                  style="width:100%; height:430px; display:block; background:var(--card); object-fit:contain;"
+                >
+                  <source src={g.src} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img src={g.src} alt={g.title ?? ""} loading="lazy" />
+              )}
+
               <div class="galMeta">
-                <div class="capT">{g.title}</div>
+                {g.title ? <div class="capT">{g.title}</div> : null}
                 {g.caption ? <div class="capD">{g.caption}</div> : null}
                 <div class="capIdx">{i + 1} / {project.gallery.length}</div>
               </div>
@@ -160,7 +175,7 @@ const heroFit = project.heroFit ?? "cover";
           ))}
         </div>
 
-        <!-- LIGHTBOX -->
+        <!-- LIGHTBOX (images only) -->
         <div class="lightbox" data-lightbox aria-hidden="true">
           <div class="lbBackdrop" data-close></div>
 
@@ -355,7 +370,16 @@ const heroFit = project.heroFit ?? "cover";
       height:430px;
       display:block;
       background:var(--card);
-      object-fit:contain; /* diagrams look correct */
+      object-fit:contain;
+    }
+
+    /* Video should match image sizing exactly */
+    .galSlide video{
+      width:100%;
+      height:430px;
+      display:block;
+      background:var(--card);
+      object-fit:contain;
     }
 
     .galMeta{
@@ -423,7 +447,7 @@ const heroFit = project.heroFit ?? "cover";
     @media (max-width:980px){
       .top{grid-template-columns:1fr}
       .hero img,.ph{height:240px}
-      .galSlide img{ height:260px; }
+      .galSlide img, .galSlide video{ height:260px; }
       .galCarousel{ min-height: 360px; }
       .lbPanel{ inset: 4vh 3vw; }
     }
@@ -467,7 +491,7 @@ const heroFit = project.heroFit ?? "cover";
       carousel.addEventListener("mouseenter", stop);
       carousel.addEventListener("mouseleave", start);
 
-      // Lightbox
+      // Lightbox (images only)
       const lb = root.querySelector("[data-lightbox]");
       const lbImg = root.querySelector("[data-lb-img]");
       const lbTitle = root.querySelector("[data-lb-title]");
@@ -477,7 +501,6 @@ const heroFit = project.heroFit ?? "cover";
       const openLB = (src, title, caption) => {
         if (!lb || !lbImg) return;
 
-        // GIFs reload reliably
         const isGif = /\.gif(\?.*)?$/i.test(src);
         lbImg.src = isGif ? `${src}${src.includes("?") ? "&" : "?"}t=${Date.now()}` : src;
 
@@ -499,7 +522,11 @@ const heroFit = project.heroFit ?? "cover";
       };
 
       slides.forEach((s) => {
-        s.addEventListener("click", () => openLB(s.dataset.src, s.dataset.title, s.dataset.caption));
+        s.addEventListener("click", () => {
+          // If this slide contains a video, do not open lightbox
+          if (s.dataset.type === "video" || s.querySelector("video")) return;
+          openLB(s.dataset.src, s.dataset.title, s.dataset.caption);
+        });
       });
 
       closeEls.forEach((el) => el.addEventListener("click", closeLB));
