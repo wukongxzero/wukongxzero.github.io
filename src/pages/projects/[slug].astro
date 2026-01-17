@@ -5,19 +5,19 @@ import { projects } from "../../data/projects.js";
 export const prerender = true;
 
 export function getStaticPaths() {
-  return projects.map((p) => ({
-    params: { slug: p.slug },
-  }));
+  return projects.map((p) => ({ params: { slug: p.slug } }));
 }
 
 const { slug } = Astro.params;
 const project = projects.find((p) => p.slug === slug);
 
-if (!project) {
-  throw new Error(`Project not found: ${slug}`);
-}
+if (!project) throw new Error(`Project not found: ${slug}`);
 
 const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
+
+// If you want, mark projects that have diagram-like heroes in projects.js:
+// heroFit: "contain" | "cover"
+const heroFit = project.heroFit ?? "cover";
 ---
 
 <Layout title={`${project.title} — Portfolio`} description={project.subtitle}>
@@ -30,37 +30,51 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
         <p class="sub">{project.subtitle}</p>
 
         <div class="meta">
-          <span class="pill">{project.year}</span>
-          <span class="pill">Tier {project.tier}</span>
+          {project.year ? <span class="pill">{project.year}</span> : null}
+          {typeof project.tier !== "undefined" ? <span class="pill">Tier {project.tier}</span> : null}
           {project.role ? <span class="pill">{project.role}</span> : null}
         </div>
 
         <div class="links">
           {project.links?.github ? (
-            <a class="btn" href={project.links.github} target="_blank">GitHub</a>
+            <a class="btn" href={project.links.github} target="_blank" rel="noreferrer">GitHub</a>
           ) : null}
 
           {project.links?.video ? (
-            <a class="btn" href={project.links.video} target="_blank">Video</a>
+            <a class="btn" href={project.links.video} target="_blank" rel="noreferrer">Video</a>
           ) : null}
 
           {project.links?.website ? (
-            <a class="btn" href={project.links.website} target="_blank" rel="noreferrer">
-              Company Website
-            </a>
+            <a class="btn" href={project.links.website} target="_blank" rel="noreferrer">Company Website</a>
           ) : null}
         </div>
-
       </div>
 
       <div class="hero">
         {hasHero(project) ? (
-          <img src={project.hero} alt={project.title} loading="eager" />
+          <img
+            src={project.hero}
+            alt={project.title}
+            loading="eager"
+            style={`object-fit:${heroFit};`}
+          />
         ) : (
           <div class="ph">Add hero image</div>
         )}
       </div>
     </header>
+
+    {project.architectureNote ? (
+      <div class="note">
+        <strong>Architecture note:</strong> {project.architectureNote}
+      </div>
+    ) : null}
+
+    {project.confidentialityNote ? (
+      <div class="note" style="margin-top:10px;">
+        <strong>Confidentiality:</strong> {project.confidentialityNote}
+      </div>
+    ) : null}
 
     <section class="section">
       <h2>What I built</h2>
@@ -83,6 +97,20 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       </section>
     ) : null}
 
+    {project.decisions?.length ? (
+      <section class="section">
+        <h2>Engineering decisions</h2>
+        <div class="decGrid">
+          {project.decisions.map((d) => (
+            <div class="decCard">
+              <div class="decTitle">{d.title}</div>
+              <div class="decDetail">{d.detail}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+    ) : null}
+
     {project.ownership?.length ? (
       <section class="section">
         <h2>Ownership</h2>
@@ -102,7 +130,7 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
     ) : null}
 
     {project.gallery?.length ? (
-      <section class="section">
+      <section class="section" data-gallery>
         <div class="galTop">
           <h2 class="h2">Gallery</h2>
           <div class="galCtrls">
@@ -114,7 +142,7 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
         <div class="galCarousel" data-carousel>
           {project.gallery.map((g, i) => (
             <button
-              class="galSlide"
+              class={`galSlide ${i === 0 ? "isActive" : ""}`}
               type="button"
               data-slide
               data-src={g.src}
@@ -169,6 +197,7 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       display:inline-block;margin:6px 0 14px;
       font-size:13px;opacity:.75;text-decoration:none;color:var(--fg)
     }
+    .back:hover{opacity:1}
 
     h1,h2{letter-spacing:-.03em}
     h1{margin:0 0 8px;font-size:40px;line-height:1.05}
@@ -187,7 +216,6 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
     .hero img{
       width:100%;
       height:260px;
-      object-fit:cover; /* hero: cover is best */
       display:block;
       background:var(--card)
     }
@@ -211,16 +239,53 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       padding:8px 10px;
       background:var(--bg);
       color:var(--fg);
-      text-decoration:none
+      text-decoration:none;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
     }
-    .btn:hover{border-color:rgba(127,127,127,.45)}
+    .btn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(127,127,127,.45);
+      box-shadow:0 10px 28px rgba(0,0,0,.10);
+    }
+
+    .note{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:var(--card);
+      color:var(--muted);
+      font-size:13px;
+    }
 
     .section{margin-top:22px}
     .txt{color:var(--fg);opacity:.92;max-width:85ch}
     .list{margin:0;padding-left:18px;color:var(--fg);opacity:.92}
     .list li{margin:8px 0}
 
-    /* STACK TAGS */
+    .decGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:10px;
+    }
+    @media (max-width:980px){ .decGrid{grid-template-columns:1fr} }
+    .decCard{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--bg);
+      padding:12px 12px 13px;
+      box-shadow:var(--shadow);
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .decCard:hover{
+      transform:translateY(-2px);
+      border-color:rgba(127,127,127,.45);
+      box-shadow:0 20px 50px rgba(0,0,0,.18);
+    }
+    .decTitle{font-weight:900;margin-bottom:6px}
+    .decDetail{color:var(--muted);font-size:13px;line-height:1.5}
+
     .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
     .tag{
       font-size:12px;
@@ -232,7 +297,7 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       opacity:.95
     }
 
-    /* ===== GALLERY CAROUSEL (ROTATING + LIGHTBOX) ===== */
+    /* ===== GALLERY CAROUSEL ===== */
     .h2{ margin:0; }
 
     .galTop{
@@ -251,11 +316,18 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       background:var(--card);
       color:var(--fg);
       cursor:pointer;
-      transition:transform .15s ease, border-color .15s ease;
+      transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
     }
-    .galBtn:hover{ transform: translateY(-1px); border-color: rgba(127,127,127,.45); }
+    .galBtn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(127,127,127,.45);
+      box-shadow:0 10px 28px rgba(0,0,0,.12);
+    }
 
-    .galCarousel{ position:relative; }
+    /* Reserve space so it feels stable */
+    .galCarousel{
+      min-height: 520px;
+    }
 
     .galSlide{
       width:100%;
@@ -265,10 +337,16 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       background:var(--bg);
       box-shadow:var(--shadow);
       padding:0;
-      display:none;           /* only active shows */
+      display:none;
       cursor: zoom-in;
       text-align:left;
       color:inherit;
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .galSlide:hover{
+      transform:translateY(-2px);
+      border-color: rgba(127,127,127,.45);
+      box-shadow:0 20px 50px rgba(0,0,0,.18);
     }
     .galSlide.isActive{ display:block; }
 
@@ -277,7 +355,7 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       height:430px;
       display:block;
       background:var(--card);
-      object-fit:contain;     /* diagrams look correct */
+      object-fit:contain; /* diagrams look correct */
     }
 
     .galMeta{
@@ -289,18 +367,9 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
     .capIdx{font-size:12px;color:var(--muted);margin-top:8px;opacity:.8}
 
     /* LIGHTBOX */
-    .lightbox{
-      position:fixed;
-      inset:0;
-      display:none;
-      z-index:9999;
-    }
+    .lightbox{position:fixed;inset:0;display:none;z-index:9999}
     .lightbox.show{ display:block; }
-
-    .lbBackdrop{
-      position:absolute; inset:0;
-      background: rgba(0,0,0,.55);
-    }
+    .lbBackdrop{position:absolute;inset:0;background: rgba(0,0,0,.55)}
 
     .lbPanel{
       position:absolute;
@@ -355,30 +424,36 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
       .top{grid-template-columns:1fr}
       .hero img,.ph{height:240px}
       .galSlide img{ height:260px; }
+      .galCarousel{ min-height: 360px; }
       .lbPanel{ inset: 4vh 3vw; }
     }
   </style>
 
   <script is:inline>
     (() => {
-      const carousel = document.querySelector('[data-carousel]');
+      const root = document.querySelector("[data-gallery]");
+      if (!root) return;
+
+      const carousel = root.querySelector("[data-carousel]");
       if (!carousel) return;
 
-      const slides = Array.from(carousel.querySelectorAll('[data-slide]'));
-      const prev = document.querySelector('[data-prev]');
-      const next = document.querySelector('[data-next]');
+      const slides = Array.from(carousel.querySelectorAll("[data-slide]"));
+      const prev = root.querySelector("[data-prev]");
+      const next = root.querySelector("[data-next]");
+
+      if (!slides.length) return;
 
       let index = 0;
       let timer = null;
 
       const show = (i) => {
         index = (i + slides.length) % slides.length;
-        slides.forEach((s, k) => s.classList.toggle('isActive', k === index));
+        slides.forEach((s, k) => s.classList.toggle("isActive", k === index));
       };
 
       const start = () => {
         stop();
-        timer = setInterval(() => show(index + 1), 4500);
+        if (slides.length > 1) timer = setInterval(() => show(index + 1), 4500);
       };
 
       const stop = () => {
@@ -386,60 +461,61 @@ const hasHero = (p) => typeof p?.hero === "string" && p.hero.trim().length > 0;
         timer = null;
       };
 
-      prev?.addEventListener('click', () => { show(index - 1); start(); });
-      next?.addEventListener('click', () => { show(index + 1); start(); });
+      prev?.addEventListener("click", () => { show(index - 1); start(); });
+      next?.addEventListener("click", () => { show(index + 1); start(); });
 
-      carousel.addEventListener('mouseenter', stop);
-      carousel.addEventListener('mouseleave', start);
+      carousel.addEventListener("mouseenter", stop);
+      carousel.addEventListener("mouseleave", start);
 
-      // Lightbox wiring
-      const lb = document.querySelector('[data-lightbox]');
-      const lbImg = document.querySelector('[data-lb-img]');
-      const lbTitle = document.querySelector('[data-lb-title]');
-      const lbCaption = document.querySelector('[data-lb-caption]');
-      const closeEls = lb ? lb.querySelectorAll('[data-close]') : [];
+      // Lightbox
+      const lb = root.querySelector("[data-lightbox]");
+      const lbImg = root.querySelector("[data-lb-img]");
+      const lbTitle = root.querySelector("[data-lb-title]");
+      const lbCaption = root.querySelector("[data-lb-caption]");
+      const closeEls = lb ? lb.querySelectorAll("[data-close]") : [];
 
       const openLB = (src, title, caption) => {
         if (!lb || !lbImg) return;
 
+        // GIFs reload reliably
         const isGif = /\.gif(\?.*)?$/i.test(src);
-        lbImg.src = isGif ? `${src}${src.includes('?') ? '&' : '?'}t=${Date.now()}` : src;
-        lbImg.alt = title || 'Gallery media';
-        lbTitle.textContent = title || '';
-        lbCaption.textContent = caption || '';
+        lbImg.src = isGif ? `${src}${src.includes("?") ? "&" : "?"}t=${Date.now()}` : src;
 
-        lb.classList.add('show');
-        lb.setAttribute('aria-hidden', 'false');
-        document.documentElement.classList.add('lbOpen');
+        lbImg.alt = title || "Gallery media";
+        if (lbTitle) lbTitle.textContent = title || "";
+        if (lbCaption) lbCaption.textContent = caption || "";
+
+        lb.classList.add("show");
+        lb.setAttribute("aria-hidden", "false");
+        document.documentElement.classList.add("lbOpen");
       };
 
       const closeLB = () => {
         if (!lb || !lbImg) return;
-        lb.classList.remove('show');
-        lb.setAttribute('aria-hidden', 'true');
-        document.documentElement.classList.remove('lbOpen');
-        lbImg.src = '';
+        lb.classList.remove("show");
+        lb.setAttribute("aria-hidden", "true");
+        document.documentElement.classList.remove("lbOpen");
+        lbImg.src = "";
       };
 
       slides.forEach((s) => {
-        s.addEventListener('click', () => {
-          openLB(s.dataset.src, s.dataset.title, s.dataset.caption);
-        });
+        s.addEventListener("click", () => openLB(s.dataset.src, s.dataset.title, s.dataset.caption));
       });
 
-      closeEls.forEach((el) => el.addEventListener('click', closeLB));
+      closeEls.forEach((el) => el.addEventListener("click", closeLB));
 
-      window.addEventListener('keydown', (e) => {
-        const lbOpen = document.documentElement.classList.contains('lbOpen');
-        if (!lbOpen) {
-          if (e.key === 'ArrowLeft') { show(index - 1); start(); }
-          if (e.key === 'ArrowRight') { show(index + 1); start(); }
+      window.addEventListener("keydown", (e) => {
+        const isOpen = document.documentElement.classList.contains("lbOpen");
+
+        if (!isOpen) {
+          if (e.key === "ArrowLeft") { show(index - 1); start(); }
+          if (e.key === "ArrowRight") { show(index + 1); start(); }
           return;
         }
 
-        if (e.key === 'Escape') closeLB;
-        if (e.key === 'ArrowLeft') show(index - 1);
-        if (e.key === 'ArrowRight') show(index + 1);
+        if (e.key === "Escape") closeLB();
+        if (e.key === "ArrowLeft") show(index - 1);
+        if (e.key === "ArrowRight") show(index + 1);
       });
 
       // Init
