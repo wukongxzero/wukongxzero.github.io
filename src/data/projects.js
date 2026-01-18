@@ -349,60 +349,392 @@ export const projects = [
 
 
   {
-    slug: "ex-hand",
-    title: "Vision-Based Gesture-Controlled Robotic Finger",
-    subtitle: "Perception → control → embedded actuation (mechatronics prototype)",
-    year: "2025",
-    tier: 2,
-    tags: ["Embedded", "Control", "Vision", "Mechatronics"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
+  slug: "ex-hand",
+  title: "Vision based— Gesture-Controlled Robotic Finger",
+  subtitle:
+    "Vision-based human-in-the-loop control: MediaPipe gesture → reference mapping → encoder PD → tendon-driven actuation",
+  year: "2025",
+  tier: 2,
+  tags: [
+    "Mechatronics",
+    "Control",
+    "Embedded",
+    "Computer Vision",
+    "Arduino",
+    "DC Motor",
+    "Encoder",
+    "MATLAB/Simulink",
+  ],
+
+  hero: "/projects/exhand/Mediapipe.png",
+  heroFit: "contain",
+
+  links: { github: "", video: "" },
+
+  systemOverview:
+    "Built a single-DOF robotic finger that tracks a human finger gesture in real time. A monocular webcam + MediaPipe estimates finger flexion, filters the signal (low-pass + deadband), maps it to a motor reference, and sends commands over serial to an Arduino. The Arduino closes the loop using rotary encoder feedback and a PD controller to drive a DC motor through an H-bridge, actuating a tendon/spool mechanism with elastic return for extension.",
+
+  problem:
+    "Translate noisy vision-based finger motion into smooth, stable actuator commands for a tendon-driven finger—while maintaining real-time behavior, safe bounds, and reliable tracking with motor-side encoder feedback.",
+
+  approach: [
+    // Perception → reference
+    "Used a webcam + MediaPipe to track 21 hand landmarks and estimate finger bend using inter-segment angles (dot-product geometry).",
+    "Applied signal conditioning (low-pass smoothing + deadband) to suppress jitter and prevent actuator chatter.",
+    "Mapped filtered finger angle to a motor reference angle with scaling + saturation to respect mechanical/electrical limits.",
+
+    // Embedded control
+    "Implemented a lightweight Arduino firmware loop: receive reference via UART (115200), read encoder, compute error, set motor direction + PWM through an H-bridge.",
+    "Added embedded safety constraints: PWM saturation, reference bounds, and a serial timeout fail-safe.",
+
+    // Modeling + validation
+    "Derived a SISO electromechanical plant model for the DC motor + transmission and designed a PD controller for stable tracking.",
+    "Validated control behavior in MATLAB/Simulink before hardware testing (closed-loop step response + Bode analysis).",
+  ],
+
+  decisions: [
+    {
+      title: "DC motor + encoder over hobby servo",
+      detail:
+        "A servo was evaluated early but lacked torque for tendon friction/elastic load; the final design uses a DC motor with rotary encoder feedback for controllable torque and closed-loop position tracking.",
+    },
+    {
+      title: "Filter + deadband to stabilize vision control",
+      detail:
+        "Vision-based angle estimates are noisy; smoothing and a deadband prevent high-frequency jitter from becoming motor chatter.",
+    },
+    {
+      title: "Partition compute: vision on host, control on MCU",
+      detail:
+        "Vision processing stays on the PC; Arduino handles deterministic low-level control for reliability under serial timing variability.",
+    },
+  ],
+
+  ownership: [
+    "System integration: vision → reference generation → serial protocol → embedded control → electromechanical actuation",
+    "Encoder processing and motor position estimation from counts-per-rev conversion",
+    "PD controller implementation + stability-focused tuning for tendon compliance",
+    "Hardware iteration: tendon routing, spool/encoder alignment, mechanical guards + return mechanism",
+  ],
+
+  results: [
+    "Achieved stable, damped closed-loop tracking of gesture-derived reference commands with noise suppression and safety constraints.",
+    "Demonstrated a complete end-to-end pipeline: perception → reference → embedded control → mechanical motion.",
+    "Produced a full engineering report with modeling + Simulink validation prior to hardware execution.",
+  ],
+
+  bullets: [
+    "MediaPipe gesture sensing → filtered reference mapping → Arduino PD control with encoder feedback",
+    "DC motor + H-bridge actuation of tendon/spool finger with elastic return + mechanical safeguards",
+    "Modeled SISO plant and validated controller stability in MATLAB/Simulink before hardware tests",
+  ],
+
+  // Add your images/GIFs into /public/projects/exhand/
+  // If you don't have them yet, keep placeholders and update filenames later.
+  gallery: [
+  {
+    title: "System Architecture",
+    src: "/projects/exhand/Systemarchitecture.png",
+    caption:
+      "End-to-end pipeline: camera input → hand tracking → finger angle estimation → Arduino-based control → DC motor actuation with encoder feedback.",
   },
+  {
+    title: "Hand Tracking with MediaPipe",
+    src: "/projects/exhand/Mediapipe.png",
+    caption:
+      "MediaPipe hand landmark detection used to extract finger joint positions in real time.",
+  },
+  {
+    title: "Finger Angle Estimation",
+    src: "/projects/exhand/Fingerangle_estimation.png",
+    caption:
+      "Geometric computation of finger bend angle from tracked hand landmarks, used as the control reference.",
+  },
+  {
+    title: "Bench-Tested Robotic Finger Prototype",
+    src: "/projects/exhand/finger.png",
+    caption:
+      "Single-DOF tendon-driven robotic finger with DC motor actuation and encoder feedback, tested on the bench.",
+  },
+  {
+    title: "Control System Design (Simulink)",
+    src: "/projects/exhand/Simulink.png",
+    caption:
+      "Simulink model used to design and validate the closed-loop PD controller before hardware deployment.",
+  },
+  {
+    src: "/projects/exhand/demo.mp4",
+    type: "video",
+    poster: "/projects/baja/Mediapipe.png",
+  },
+],
+},
+
 
   {
-    slug: "pixhawk-px4",
-    title: "Autopilot Integration & Control using PX4",
-    subtitle: "SITL-based exploration of flight control and system behavior",
-    year: "2025",
-    tier: 2,
-    tags: ["PX4", "Embedded", "Control", "Autonomy"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
+  slug: "ros2-px4-offboard-autonomy",
+  title: "ROS 2 + PX4 Offboard Autonomy",
+  subtitle:
+    "Vision-guided offboard control using ROS 2, PX4 SITL, and ArUco-based mission logic",
+  year: "2025",
+  tier: 2,
+  tags: [
+    "PX4",
+    "ROS 2",
+    "Autonomy",
+    "Offboard Control",
+    "Computer Vision",
+    "ArUco",
+    "Robotics Systems",
+    "SITL",
+  ],
+
+  hero: "/projects/px4/px4_sitl.png", // optional later (QGC / Gazebo / RViz screenshot if you add one)
+  links: {
+    github: "https://github.com/wukongxzero/ros2-px4-spiral-aruco-waypoint-method",
   },
 
+  systemOverview:
+    "Developed a ROS 2–based offboard autonomy stack integrated with PX4 SITL to execute waypoint missions and vision-triggered behaviors. The system combines PX4 flight control with ROS 2 mission logic and ArUco marker detection to dynamically alter flight behavior during runtime, demonstrating middleware integration, autonomy logic, and perception-driven control.",
+
+  problem:
+    "Design an offboard autonomy workflow that allows high-level mission logic and vision-based triggers to influence PX4-controlled flight behavior, while maintaining stable low-level flight control and clean separation between autonomy and autopilot responsibilities.",
+
+  approach: [
+    "Set up PX4 SITL with Gazebo and QGroundControl for simulation-based development and testing.",
+    "Implemented ROS 2 nodes for offboard control, waypoint publishing, and mission state management.",
+    "Integrated PX4 offboard mode to accept position setpoints from ROS 2 at a fixed control rate.",
+    "Used ArUco marker detection as a perception trigger to switch mission phases (e.g., waypoint update or spiral descent).",
+    "Designed spiral and waypoint trajectories in ROS 2 rather than embedding mission logic inside PX4 firmware.",
+    "Managed multi-process execution (PX4 SITL, ROS 2 nodes, vision pipeline) with clear startup and timing coordination.",
+  ],
+
+  decisions: [
+    {
+      title: "Offboard autonomy instead of PX4 firmware modification",
+      detail:
+        "Kept PX4 as a stable low-level flight controller while implementing mission logic in ROS 2 for flexibility, debuggability, and faster iteration.",
+    },
+    {
+      title: "Vision as a mission trigger, not a control loop",
+      detail:
+        "Used ArUco detection to trigger discrete mission state changes rather than directly closing a visual servoing loop, improving robustness.",
+    },
+    {
+      title: "Simulation-first development",
+      detail:
+        "Developed and validated mission logic entirely in PX4 SITL before considering hardware execution.",
+    },
+  ],
+
+  ownership: [
+    "PX4 SITL setup and configuration (Gazebo + QGroundControl).",
+    "ROS 2 offboard control node design and implementation.",
+    "Mission logic for waypoint navigation and spiral trajectories.",
+    "Vision pipeline integration using ArUco markers.",
+    "System-level debugging across PX4, ROS 2, and simulation tools.",
+  ],
+
+  results: [
+    "Successfully executed offboard waypoint missions controlled entirely from ROS 2.",
+    "Demonstrated vision-triggered mission transitions using ArUco marker detection.",
+    "Validated a modular autonomy architecture separating perception, mission logic, and flight control.",
+  ],
+
+  bullets: [
+    "Built ROS 2 offboard autonomy stack integrated with PX4 SITL",
+    "Implemented waypoint and spiral mission logic driven by ArUco vision triggers",
+    "Demonstrated clean separation between autonomy logic and PX4 flight control",
+  ],
+
+  // No gallery required — this project is architecture & systems focused
+},
+
+
   {
-    slug: "home-service-robot",
-    title: "Home Service Robot (Prototype)",
-    subtitle: "Autonomy-oriented integration: sensing, planning, and control",
-    year: "2025",
-    tier: 2,
-    tags: ["Robotics", "Autonomy", "Integration"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
+  slug: "home-service-bot",
+  title: "Home Service Robot — SLAM, Localization & Autonomous Delivery",
+  subtitle:
+    "ROS Noetic + Gazebo autonomy stack: RTAB-Map SLAM, AMCL localization, navigation, and simulated pickup/drop-off via markers",
+  year: "2024–2025",
+  tier: 2,
+  tags: [
+    "ROS (Noetic)",
+    "Gazebo",
+    "RViz",
+    "SLAM",
+    "RTAB-Map",
+    "AMCL",
+    "Navigation Stack",
+    "Autonomy",
+    "C++",
+  ],
+
+  hero: "/projects/home-robot/vid_homeservice_rviz_window.gif", // add later (Gazebo/RViz screenshot works great)
+  heroFit: "cover",
+
+  links: {
+    github: "https://github.com/wukongxzero/home-service-bot",
+    video: "", // optional later
   },
+
+  systemOverview:
+    "Built a simulated home-service delivery robot in Gazebo using a full ROS autonomy pipeline. The robot performs mapping (RTAB-Map RGB-D SLAM), localization (AMCL particle filter on a saved map), and autonomous navigation using the ROS Navigation Stack. A pickup-and-delivery task is simulated by navigating to a pickup zone, hiding a marker, then navigating to a drop-off zone and re-spawning the marker in RViz.",
+
+  problem:
+    "Create a mobile robot workflow that can (1) build or use a map, (2) localize reliably, and (3) navigate autonomously between task waypoints—then simulate a pickup/drop-off operation in a repeatable, testable way.",
+
+  approach: [
+    "Developed and tested on Ubuntu 20.04 with ROS Noetic, Gazebo, and RViz for simulation and visualization.",
+    "Used RTAB-Map for RGB-D SLAM to generate a 3D map and validate loop-closures during mapping.",
+    "Used map_server + AMCL (adaptive Monte Carlo localization) to localize the robot on a known map.",
+    "Used the ROS Navigation Stack to plan and execute safe motion using costmaps and a local planner.",
+    "Implemented the task as staged scripts: SLAM test, navigation test, pick_objects (autonomous goals), add_marker (marker hide/show), and a full home_service run.",
+  ],
+
+  decisions: [
+    {
+      title: "Leverage mature ROS autonomy packages",
+      detail:
+        "Used RTAB-Map, AMCL, and the Navigation Stack rather than re-implementing SLAM/localization from scratch, focusing effort on integration and system behavior.",
+    },
+    {
+      title: "Scripted workflows for repeatability",
+      detail:
+        "Wrapped the pipeline into launch/scripts (test_slam, test_navigation, pick_objects, add_marker, home_service) to make runs consistent and easy to debug.",
+    },
+    {
+      title: "Tune costmaps and planner parameters",
+      detail:
+        "Adjusted costmap and local planner YAML parameters (inflation, obstacle/raytrace range, planner limits) to achieve stable navigation behavior in the environment.",
+    },
+  ],
+
+  ownership: [
+    "Autonomy pipeline integration across mapping, localization, navigation, and task execution",
+    "Launch/script orchestration for SLAM, navigation, and pickup/drop-off simulation runs",
+    "Costmap and local planner parameter tuning for stable navigation",
+    "End-to-end debugging using RViz (maps/markers) and ROS tools",
+  ],
+
+  results: [
+    "Demonstrated a full autonomy workflow: SLAM → localization → navigation → simulated pickup/drop-off delivery task.",
+    "Created repeatable run scripts for testing and a full mission execution flow.",
+    "Validated navigation stability through costmap/planner parameter tuning.",
+  ],
+
+  bullets: [
+    "Integrated RTAB-Map SLAM, AMCL localization, and ROS Navigation Stack in Gazebo",
+    "Built a full delivery mission: navigate to pickup/drop-off zones + marker-based pickup simulation in RViz",
+    "Packaged runs into repeatable scripts and tuned costmaps/planners for stable behavior",
+  ],
+
+  // Optional: add later when you capture screenshots
+  gallery: [
+  {
+    title: "Gazebo Environment",
+    src: "/projects/home-robot/gazebo_image.jpg",
+    caption: "Robot navigating in the simulated indoor environment."
+  },
+  {
+    title: "SLAM Visualization (RViz)",
+    src: "/projects/home-robot/vid_homeservice_rviz_window.gif",
+    caption: "Live RViz visualization during SLAM and navigation."
+  },
+  {
+    title: "AMCL + Navigation",
+    src: "/projects/home-robot/nav_sample.jpg",
+    caption: "Localization and navigation stack driving autonomous motion."
+  },
+  {
+    title: "Pickup / Drop-off Marker",
+    src: "/projects/home-robot/add_marker_test.jpg",
+    caption: "Marker hide/show simulating pickup and delivery in RViz."
+  },
+  {
+    title: "Saved Map Output",
+    src: "/projects/home-robot/saved_map.jpg",
+    caption: "Generated occupancy grid map after SLAM."
+  }
+],
+
+},
+
 
   // =========================
-  // EXPLORATORY (Tier 3)
-  // =========================
-  {
-    slug: "ml-modeling",
-    title: "ML Modeling Projects",
-    subtitle: "Applied modeling experiments with clear evaluation metrics",
-    year: "2023–2025",
-    tier: 3,
-    tags: ["ML", "Python", "Modeling"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
+// TIER 3 — Research / WIP
+// =========================
+
+{
+  slug: "ml-modeling",
+  title: "ML Modeling Projects",
+  subtitle: "Applied modeling experiments with clear evaluation metrics",
+  year: "2023–2025",
+  tier: 3,
+  tags: ["Python", "Machine Learning", "Modeling"],
+  hero: "/projects/ml/ML.png",
+  links: { github: "https://github.com/wukongxzero" },
+
+  systemOverview:
+    "A collection of exploratory machine learning and learning-based control experiments focused on problem formulation, data pipelines, and quantitative evaluation. Emphasis is on modeling discipline and metrics rather than production ML systems.",
+
+  approach: [
+    "Customer Segmentation — clustering-based analysis with feature normalization and metric-driven evaluation",
+    "Sign Language Detection (LSTM) — sequence modeling for temporal gesture classification and performance evaluation",
+    "CartPole — learning-based control benchmark; reward shaping, convergence behavior, and stability tradeoffs",
+    "Time Pilot — reward-driven decision-making in a simulated environment",
+    "Autonomous Driving (Gym) — simulated driving behaviors using learning-based policies",
+  ],
+},
+
+{
+  slug: "missile-analysis",
+  title: "Supersonic Jet Interaction — CFD Research (Publication)",
+  subtitle: "Numerical exploration of sonic injection into supersonic crossflow (CFD / compressible flow)",
+  year: "2022–2023",
+  tier: 3,
+
+  tags: ["CFD", "Compressible Flow", "Supersonic", "Numerical Methods", "Research"],
+
+  // Use placeholder until you add a real image:
+  hero: "/projects/missile/pressurecontour.png",
+  // Or if you create one later:
+  // hero: "/projects/missile-analysis/hero.jpg",
+
+  links: {
+    // Keep these links public + safe
+    website:
+      "https://www.semanticscholar.org/paper/Numerical-Exploration-of-Sonic-Injection-In-Cross-Boggarapu-Velagaleti/bf6faff9cbc64005bd8bc88c03d1b17e4bca523d",
+    // If you want a PDF button later, drop the pdf into /public/projects/missile-analysis/
+    // and then add:
+    // report: "/projects/missile-analysis/paper.pdf",
   },
 
-  {
-    slug: "missile-analysis",
-    title: "High-Speed Missile Analysis (Research Work)",
-    subtitle: "Dynamics modeling and engineering analysis",
-    year: "2022–2023",
-    tier: 3,
-    tags: ["Analysis", "Modeling", "Research"],
-    hero: "/projects/_placeholder/hero.jpg",
-    links: { github: "", video: "" },
-  },
+  systemOverview:
+    "Co-authored a CFD research study investigating sonic jet injection into a supersonic crossflow. The work focuses on compressible-flow behavior and jet–crossflow interaction phenomena relevant to high-speed aerodynamic control and mixing problems.",
+
+  problem:
+    "Characterize how a transverse sonic jet interacts with a supersonic freestream and identify key flow features and trends using numerical simulation.",
+
+  approach: [
+    "Set up a numerical simulation workflow for compressible, high-speed flow conditions",
+    "Studied jet–crossflow interaction behavior and resulting shock/flow structures in the simulation domain",
+    "Analyzed flow-field outputs qualitatively and quantitatively to extract trends and engineering insights",
+    "Documented methodology, assumptions, and findings in a publication-style research writeup",
+  ],
+
+  results: [
+    "Produced a complete numerical study and research writeup on sonic injection in supersonic crossflow",
+    "Identified and documented dominant interaction patterns and flow features observed in simulation",
+    "Published the work with co-authors as a research contribution",
+  ],
+
+  bullets: [
+    "Co-authored a CFD paper on sonic jet injection into supersonic crossflow",
+    "Analyzed compressible-flow interaction patterns and flow-field trends from numerical simulations",
+    "Delivered a publication-style report documenting setup, assumptions, and findings",
+  ],
+},
+
+
 ];
