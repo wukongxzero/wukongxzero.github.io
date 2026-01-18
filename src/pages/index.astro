@@ -9,28 +9,15 @@ const tier3 = projects.filter((p) => Number(p.tier) >= 3);
 const fallbackHero = "/projects/_placeholder/hero.jpg";
 const safeImg = (src) => (typeof src === "string" && src.trim() ? src : fallbackHero);
 
-/** Same data model as /stack/index.astro */
 const CATS = [
   {
     key: "programming",
     label: "Programming",
     icon: "{}",
     items: [
-      {
-        title: "C++",
-        desc: "Real-time oriented robotics software, control loops, tooling.",
-        tags: ["C++", "Perf", "Systems"],
-      },
-      {
-        title: "Python",
-        desc: "Simulation tooling, data + evaluation scripts, prototyping.",
-        tags: ["Python", "Tools"],
-      },
-      {
-        title: "MATLAB",
-        desc: "Control analysis, modeling, simulation validation.",
-        tags: ["MATLAB", "Control"],
-      },
+      { title: "C++", desc: "Real-time oriented robotics software, control loops, tooling.", tags: ["C++", "Perf", "Systems"] },
+      { title: "Python", desc: "Simulation tooling, data + evaluation scripts, prototyping.", tags: ["Python", "Tools"] },
+      { title: "MATLAB", desc: "Control analysis, modeling, simulation validation.", tags: ["MATLAB", "Control"] },
     ],
   },
   {
@@ -38,26 +25,10 @@ const CATS = [
     label: "Robotics & Control Systems",
     icon: "⚙️",
     items: [
-      {
-        title: "Kinematics",
-        desc: "FK/IK, frames, Jacobians, tool-frame motion.",
-        tags: ["FK/IK", "Frames"],
-      },
-      {
-        title: "PID / PD Control",
-        desc: "Tracking controllers, tuning, stability tradeoffs.",
-        tags: ["Control", "Tuning"],
-      },
-      {
-        title: "Teleoperation",
-        desc: "Low-latency command → motion pipelines.",
-        tags: ["Teleop", "Latency"],
-      },
-      {
-        title: "Kalman Filtering",
-        desc: "State estimation from noisy measurements.",
-        tags: ["Estimation"],
-      },
+      { title: "Kinematics", desc: "FK/IK, frames, Jacobians, tool-frame motion.", tags: ["FK/IK", "Frames"] },
+      { title: "PID / PD Control", desc: "Tracking controllers, tuning, stability tradeoffs.", tags: ["Control", "Tuning"] },
+      { title: "Teleoperation", desc: "Low-latency command → motion pipelines.", tags: ["Teleop", "Latency"] },
+      { title: "Kalman Filtering", desc: "State estimation from noisy measurements.", tags: ["Estimation"] },
     ],
   },
   {
@@ -125,7 +96,7 @@ const CATS = [
           <a class="btn btnPrimary" href="#projects">View Projects ↓</a>
           <a class="btn" href="#stack">Tools & Stack</a>
           <a class="btn" href="/projects/">All Projects</a>
-          <a class="btn" href="mailto:ADD_EMAIL_HERE">Contact</a>
+          <a class="btn" href="mailto:pkv236@nyu.edu">Contact</a>
         </div>
 
         <div class="chips">
@@ -225,7 +196,7 @@ const CATS = [
       </div>
     </section>
 
-    <!-- TOOLS / STACK (same style as /stack page) -->
+    <!-- TOOLS / STACK -->
     <section id="stack" class="section stackSection">
       <header class="head">
         <h2>Tools & Tech Stack</h2>
@@ -287,7 +258,6 @@ const CATS = [
   </main>
 
   <style>
-    /* anchor reliability under sticky header */
     #projects, #stack { scroll-margin-top: 90px; }
 
     h1{
@@ -341,6 +311,7 @@ const CATS = [
       transform: translateY(-1px);
       border-color: rgba(127,127,127,.45);
       box-shadow: 0 10px 28px rgba(0,0,0,.10);
+      text-decoration:none;
     }
     .btnPrimary{ font-weight:900; }
 
@@ -401,7 +372,15 @@ const CATS = [
       background:var(--bg);
       border:1px solid var(--line);
       transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      text-decoration:none;
+      color:var(--fg);
     }
+
+    /* IMPORTANT: stop global link color/visited color inside project cards */
+    .card, .card:visited{ color: var(--fg); }
+    .card strong, .card p, .card span{ color: inherit; }
+    .card:hover strong{ text-decoration: underline; text-decoration-color: var(--muted); }
+
     .card:hover{
       transform:translateY(-6px);
       border-color: rgba(127,127,127,.45);
@@ -432,7 +411,7 @@ const CATS = [
     .muted{ color:var(--muted); }
     .small{ font-size:12px; }
 
-    /* ===== STACK SECTION (match /stack page) ===== */
+    /* ===== STACK SECTION (fixed for dark mode) ===== */
     .stackSection{ margin-top: 8px; }
     .head{ margin-top: 6px; }
     .head .sub{ margin:0 0 14px; }
@@ -441,12 +420,23 @@ const CATS = [
     .tab{
       display:flex;gap:10px;align-items:center;
       padding:10px 12px;border-radius:14px;
-      border:1px solid var(--line);background:var(--bg);color:var(--fg);
-      cursor:pointer;opacity:.82;
-      transition:opacity .15s ease, transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+      border:1px solid var(--line);
+      background:var(--card);
+      color:var(--fg);
+      cursor:pointer;
+      transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease;
     }
-    .tab:hover{opacity:1;transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,.10)}
-    .tab.active{opacity:1;border-color:rgba(240,185,75,.55);box-shadow:0 10px 28px rgba(0,0,0,.14)}
+    .tab:hover{
+      transform:translateY(-1px);
+      border-color:rgba(127,127,127,.35);
+      box-shadow:0 10px 28px rgba(0,0,0,.12);
+      background: color-mix(in srgb, var(--card) 70%, var(--bg));
+    }
+    .tab.active{
+      border-color:rgba(240,185,75,.55);
+      box-shadow:0 10px 28px rgba(0,0,0,.16);
+      background: color-mix(in srgb, var(--card) 55%, var(--bg));
+    }
     .tabIcon{width:24px;display:inline-grid;place-items:center;font-weight:900}
 
     .panelT{display:none}
@@ -461,25 +451,31 @@ const CATS = [
       text-align:left;
       border-radius:18px;
       border:1px solid var(--line);
-      background:var(--bg);
+      background:var(--card);
       padding:14px;
       min-height:160px;
       box-shadow:var(--shadow);
       cursor:pointer;
-      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+      transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
     }
     .stackCard:hover{
       transform:translateY(-4px);
       border-color:rgba(127,127,127,.45);
-      box-shadow:0 20px 50px rgba(0,0,0,.18);
+      box-shadow:0 20px 50px rgba(0,0,0,.22);
+      background: color-mix(in srgb, var(--card) 65%, var(--bg));
     }
-    .cardTitle{font-weight:900;letter-spacing:-.01em}
-    .cardDesc{margin-top:8px;opacity:.75;font-size:13px;line-height:1.45}
 
-    /* Modal */
+    .cardTitle{font-weight:900;letter-spacing:-.01em;color:var(--fg)}
+    .cardDesc{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45
+    }
+
     .modal{position:fixed;inset:0;display:none;z-index:80}
     .modal.show{display:block}
-    .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.42)}
+    .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.48)}
     .sheet{
       position:absolute;left:50%;top:50%;
       transform:translate(-50%,-50%);
@@ -487,26 +483,36 @@ const CATS = [
       border-radius:18px;
       border:1px solid var(--line);
       background:var(--bg);
-      box-shadow:0 40px 100px rgba(0,0,0,.35);
+      box-shadow:0 40px 100px rgba(0,0,0,.40);
       padding:18px;
     }
     .x{
       position:absolute;right:12px;top:10px;
       border:1px solid var(--line);
-      background:var(--bg);
+      background:var(--card);
       color:var(--fg);
       border-radius:12px;
       padding:6px 10px;
       cursor:pointer
     }
-    .mTitle{font-weight:900;font-size:20px;margin-bottom:8px}
-    .mDesc{opacity:.82;line-height:1.6}
+    .mTitle{font-weight:900;font-size:20px;margin-bottom:8px;color:var(--fg)}
+    .mDesc{color:var(--muted);line-height:1.6}
     .mTags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .hint{margin-top:12px;font-size:12px}
+    .hint{margin-top:12px;font-size:12px;color:var(--muted)}
+    /* ===============================
+   FIX: stop blue/purple links on project cards
+   =============================== */
+    a.card,
+    a.card:visited,
+    a.card:hover,
+    a.card:active{
+      color: var(--fg) !important;
+      text-decoration: none !important;
+    }
+
   </style>
 
   <script is:inline>
-    // Tabs (scoped to #stack so it doesn't conflict with /stack page)
     const tabs = document.querySelectorAll("#stack [data-tab]");
     const panels = document.querySelectorAll("#stack [data-panel]");
 
@@ -521,7 +527,6 @@ const CATS = [
 
     tabs.forEach(t => t.addEventListener("click", () => setActive(t.dataset.tab)));
 
-    // Modal
     const modal = document.querySelector("#stack [data-modal]");
     const titleEl = document.querySelector("#stack [data-m-title]");
     const descEl = document.querySelector("#stack [data-m-desc]");
@@ -547,7 +552,6 @@ const CATS = [
     document.querySelectorAll("#stack [data-close]").forEach(b => b.addEventListener("click", close));
     window.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
 
-    // Default tab
     const first = tabs?.[0]?.dataset?.tab;
     if (first) setActive(first);
   </script>

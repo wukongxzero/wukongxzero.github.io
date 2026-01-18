@@ -15,32 +15,50 @@ const LOC = "New York, NY";
         <p class="kicker">{TITLE} • {LOC}</p>
         <h1>About</h1>
         <p class="sub">
-          I build robotics systems end-to-end with a focus on reliability, real-time behavior,
-          and clear engineering tradeoffs — from perception/control loops to tooling and debugging.
+          I build robotics software where timing, reliability, and system behavior actually matter —
+          from real-time control loops and low-latency communication to simulation-first testing and debugging tooling.
         </p>
 
         <div class="panel">
           <strong>Now</strong>
           <p class="muted">
-            MS Mechatronics & Robotics @ NYU. Actively looking for Robotics Software Intern / New Grad roles
-            (real-time control, robotic systems, simulation, autonomy).
+            MS Mechatronics & Robotics @ NYU. I’m actively looking for Robotics Software Intern / New Grad roles
+            focused on real-time control, robotic systems, simulation, and autonomy.
           </p>
+          <ul class="list muted">
+            <li>Current focus: manipulation + control foundations (FK/IK, Jacobians, tracking control)</li>
+            <li>Workflow: design → simulate → evaluate → iterate (repeatable experiments, metrics, failure cases)</li>
+          </ul>
         </div>
 
         <div class="panel">
           <strong>Previously</strong>
           <p class="muted">
-            Built real-time control, teleoperation, and safety-aware motion pipelines for surgical robotics.
-            Strong ownership mindset: bring-up, debugging, observability, and system integration.
+            At a surgical robotics startup, I worked on real robot bring-up and demo-critical systems:
+            real-time motion/control pipelines, teleoperation behavior, and the communication glue between subsystems.
           </p>
+          <ul class="list muted">
+            <li>Built and tuned tracking controllers and motion execution pipelines</li>
+            <li>Worked with low-latency comms (DDS/CAN + system integration patterns)</li>
+            <li>Owned debugging/observability: logs, tools, and failure-mode isolation under pressure</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <strong>What I build (selected)</strong>
+          <ul class="list muted">
+            <li><b>Manipulation simulation</b>: UR10e MuJoCo tasks, interception-style behaviors, controller stability + evaluation loops</li>
+            <li><b>Autonomy pipeline</b>: ROS2 + PX4 offboard mission logic with vision-based waypointing</li>
+            <li><b>Full-stack mechatronics</b>: vision → embedded control → actuation with encoder feedback (gesture-controlled robotic finger)</li>
+          </ul>
         </div>
 
         <div class="panel">
           <strong>Core strengths</strong>
           <ul class="list muted">
-            <li>Real-time control loops, scheduling, latency + reliability thinking</li>
-            <li>Robot kinematics, tool-frame motion, constraint handling</li>
-            <li>Simulation-first workflows, evaluation tooling, debugging + logs</li>
+            <li>Real-time control loops, latency + reliability thinking, clean system boundaries</li>
+            <li>Robot kinematics and control: FK/IK, frames, Jacobians, tracking</li>
+            <li>Simulation-first workflows: reproducible testing, metrics, debugging tools</li>
             <li>Systems integration: comms, embedded interfaces, safety constraints</li>
           </ul>
         </div>
@@ -48,7 +66,7 @@ const LOC = "New York, NY";
         <div class="actions">
           <a class="btn" href="/#projects">Projects</a>
           <a class="btn" href="/stack/">Tools & Stack</a>
-          <a class="btn" href="mailto:ADD_EMAIL_HERE">Email</a>
+          <a class="btn" href="mailto:pkv236@nyu.edu">Email</a>
         </div>
       </div>
 

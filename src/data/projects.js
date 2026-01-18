@@ -366,7 +366,7 @@ export const projects = [
     "MATLAB/Simulink",
   ],
 
-  hero: "/projects/exhand/Mediapipe.png",
+  hero: "/projects/exhand/Mediapipe.gif",
   heroFit: "contain",
 
   links: { github: "", video: "" },
@@ -440,7 +440,7 @@ export const projects = [
   },
   {
     title: "Hand Tracking with MediaPipe",
-    src: "/projects/exhand/Mediapipe.png",
+    src: "/projects/exhand/Mediapipe.gif",
     caption:
       "MediaPipe hand landmark detection used to extract finger joint positions in real time.",
   },
