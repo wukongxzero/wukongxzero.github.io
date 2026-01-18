@@ -19,6 +19,8 @@ export const projects = [
     "BLDC",
     "FOC",
     "FPGA",
+    "ODrive",
+    "mjbots moteus",
     "DDS",
     "Safety",
     "Systems",
@@ -44,7 +46,7 @@ export const projects = [
     "Worked directly under the CEO to design and deliver Cosmos, the real-time control and communication architecture powering the Pulsar surgical robot. Acted as technical lead across robotics software, coordinating execution with control architects, computer vision engineers, and electronics/hardware teams. Owned system-level decisions, software execution, and hardware–software integration required to bring the platform from development to validated demos.",
 
   systemOverview:
-    "Cosmos is a real-time control and communication architecture for multi-DOF teleoperated surgical robots such as Pulsar. It supports deterministic tool-frame motion (RPY + insertion), dynamic instrument swaps, safety-aware state gating, and low-latency teleoperation under strict timing and reliability constraints. The architecture spans high-level teleoperation and kinematics down to FPGA-based BLDC motor control, enabling deterministic actuation, closed-loop stability, and fault-safe behavior. The software was designed with medical device software lifecycle expectations (ISO 62304) and relevant IEC electronics standards in mind.",
+    "Cosmos is a real-time control and communication architecture for multi-DOF teleoperated surgical robots such as Pulsar. It supports deterministic tool-frame motion (RPY + insertion), dynamic instrument swaps, safety-aware state gating, and low-latency teleoperation under strict timing and reliability constraints. The architecture spans high-level teleoperation and kinematics down to FPGA-backed BLDC motor control, integrating commercial motor-control platforms such as ODrive and mjbots moteus for deterministic actuation, closed-loop stability, and fault-safe behavior. The software was designed with medical device software lifecycle expectations (ISO 62304) and relevant IEC electronics standards in mind.",
 
   confidentialityNote:
     "This page shows representative architecture only. Details are generalized to respect confidentiality.",
@@ -94,9 +96,10 @@ export const projects = [
     "Built tool-frame motion control (RPY + insertion) and integrated FK/IK into teleoperation pipelines",
     "Designed instrument lifecycle handling: identification, frame updates, safety re-initialization",
     "Built observability tooling: high-rate logging and dashboards for bring-up, debugging, and validation",
-    "Designed and tuned BLDC motor control loops (current, velocity, and position) using FOC for surgical manipulators",
+    "Designed and tuned BLDC motor control loops (current, velocity, position) using FOC for surgical manipulators",
+    "Integrated and validated ODrive and mjbots moteus motor controllers, configuring control modes, limits, and fault handling for surgical use",
     "Developed FPGA-based real-time motor-control and IO pipelines (PWM generation, encoder decoding, safety interlocks)",
-    "Integrated FPGA motor control with Cosmos’ real-time C++ control stack, debugging jitter, race conditions, and timing faults across hardware–software boundaries",
+    "Integrated FPGA and motor-controller actuation paths with Cosmos’ real-time C++ control stack, debugging jitter, race conditions, and timing faults across hardware–software boundaries",
   ],
 
   decisions: [
@@ -106,14 +109,14 @@ export const projects = [
         "Explicit real-time scheduling boundaries to reduce jitter and simplify debugging across control and actuation layers.",
     },
     {
-      title: "DDS middleware selection",
+      title: "Motor controller selection and abstraction",
       detail:
-        "Worked with Cyclone DDS and Fast DDS to balance latency, reliability, and configurability for real-time surgical robotics workloads.",
+        "Evaluated and integrated ODrive and mjbots moteus to balance performance, observability, and safety, while abstracting actuation behind Cosmos’ real-time control interfaces.",
     },
     {
       title: "Safety gating and recovery",
       detail:
-        "State-driven enable/disable logic with predictable fault recovery paths across software and motor-control layers.",
+        "State-driven enable/disable logic with predictable fault recovery paths spanning software, FPGA IO, and motor controllers.",
     },
   ],
 
@@ -124,6 +127,7 @@ export const projects = [
     "Designed software workflows aligned with ISO 62304 expectations",
     "Teleoperation behavior and tool-frame motion pipelines",
     "Ownership of BLDC motor control behavior, tuning, and closed-loop performance",
+    "Integration and validation of ODrive and mjbots moteus motor controllers",
     "FPGA-based real-time IO, motor actuation pipelines, and safety interlocks",
     "Safety constraints, fault responses, and lifecycle re-initialization",
     "Observability tooling for validation and live demos",
@@ -132,7 +136,7 @@ export const projects = [
   results: [
     "~1–3 ms control-cycle compute budget under RT scheduling",
     "~22–26 ms end-to-end command → motion latency",
-    "Stable closed-loop BLDC actuation with deterministic timing under teleoperation and safety constraints",
+    "Stable closed-loop BLDC actuation using ODrive and mjbots moteus under deterministic real-time constraints",
     "Safe dynamic instrument swaps without loss of control continuity",
     "Faster bring-up and debugging through integrated observability tooling",
   ],
@@ -141,9 +145,10 @@ export const projects = [
     "Led robotics software execution under the CEO, architecting Cosmos for real-time control, communication, and safety-aware motion",
     "Designed software aligned with ISO 62304 medical device lifecycle expectations and IEC electronics standards",
     "Integrated DDS middleware (Cyclone DDS, Fast DDS) across distributed robotic subsystems",
-    "Served as technical integrator across control, computer vision, and hardware teams",
+    "Served as technical integrator across control, computer vision, electronics, and hardware teams",
     "Built deterministic multithreaded execution, teleoperation behaviors, tool-frame motion, and FPGA-backed BLDC motor control pipelines",
-    "Designed and validated closed-loop motor control and real-time actuation paths critical to surgical motion fidelity and safety",
+    "Integrated and validated ODrive and mjbots moteus motor controllers for closed-loop surgical actuation",
+    "Designed and validated real-time motor control and actuation paths critical to surgical motion fidelity and safety",
   ],
 }
 
