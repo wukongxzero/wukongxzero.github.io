@@ -150,7 +150,7 @@ export const projects = [
     "Integrated and validated ODrive and mjbots moteus motor controllers for closed-loop surgical actuation",
     "Designed and validated real-time motor control and actuation paths critical to surgical motion fidelity and safety",
   ],
-}
+},
 
 
   // =========================
