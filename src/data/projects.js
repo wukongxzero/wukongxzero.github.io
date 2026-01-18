@@ -97,7 +97,7 @@ export const projects = [
     "Designed instrument lifecycle handling: identification, frame updates, safety re-initialization",
     "Built observability tooling: high-rate logging and dashboards for bring-up, debugging, and validation",
     "Designed and tuned BLDC motor control loops (current, velocity, position) using FOC for surgical manipulators",
-    "Integrated and validated ODrive and mjbots moteus motor controllers, configuring control modes, limits, and fault handling for surgical use",
+    "Integrated and validated commercial BLDC motor controllers (e.g., ODrive, mjbots moteus) within a real-time surgical control architecture.",
     "Developed FPGA-based real-time motor-control and IO pipelines (PWM generation, encoder decoding, safety interlocks)",
     "Integrated FPGA and motor-controller actuation paths with Cosmos’ real-time C++ control stack, debugging jitter, race conditions, and timing faults across hardware–software boundaries",
   ],
