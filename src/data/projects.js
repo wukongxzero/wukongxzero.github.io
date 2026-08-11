@@ -85,6 +85,12 @@ export const projects = [
       caption:
         "Public demonstration of the Pulsar surgical robotic system and Cosmos control architecture.",
     },
+    {
+      title: "In-House Robot Testing",
+      src: "/projects/articulus/my_own_feats.avif",
+      caption:
+        "On-site testing of our robots at Articulus during development and validation.",
+    },
   ],
 
   approach: [
