@@ -247,9 +247,9 @@ export const projects = [
 
   gallery: [
     {
-      title: "WALL-E Hardware",
-      src: "/projects/wall-e/hardware.jpeg",
-      caption: "The physical robot — 3D-printed tank-tracked chassis and pan/tilt head.",
+      title: "System Architecture Sketch",
+      src: "/projects/wall-e/architecture-sketch.jpeg",
+      caption: "Early architecture sketch: browser, ROS2 cluster, and LLM interface communicating over WebSockets.",
     },
     {
       title: "Browser Teleop UI",
@@ -257,9 +257,44 @@ export const projects = [
       caption: "Debug view of the browser-based teleop web UI over the tank-status protocol.",
     },
     {
-      title: "System Architecture Sketch",
-      src: "/projects/wall-e/architecture-sketch.jpeg",
-      caption: "Early architecture sketch: browser, ROS2 cluster, and LLM interface communicating over WebSockets.",
+      title: "WALL-E Hardware",
+      src: "/projects/wall-e/hardware.jpeg",
+      caption: "The physical robot — 3D-printed tank-tracked chassis and pan/tilt head.",
+    },
+    {
+      src: "/projects/wall-e/demo1.mp4",
+      type: "video",
+      poster: "/projects/wall-e/hardware.jpeg",
+      title: "WALL-E Demo Clip 1",
+      caption: "Demo footage.",
+    },
+    {
+      src: "/projects/wall-e/demo2.mp4",
+      type: "video",
+      poster: "/projects/wall-e/hardware.jpeg",
+      title: "WALL-E Demo Clip 2",
+      caption: "Demo footage.",
+    },
+    {
+      src: "/projects/wall-e/demo3.mp4",
+      type: "video",
+      poster: "/projects/wall-e/hardware.jpeg",
+      title: "WALL-E Demo Clip 3",
+      caption: "Demo footage.",
+    },
+    {
+      src: "/projects/wall-e/demo4.mp4",
+      type: "video",
+      poster: "/projects/wall-e/hardware.jpeg",
+      title: "WALL-E Demo Clip 4",
+      caption: "Demo footage.",
+    },
+    {
+      src: "/projects/wall-e/demo5.mp4",
+      type: "video",
+      poster: "/projects/wall-e/hardware.jpeg",
+      title: "WALL-E Demo Clip 5",
+      caption: "Demo footage.",
     },
   ],
 },
