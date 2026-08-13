@@ -158,6 +158,111 @@ export const projects = [
   ],
 },
 
+{
+  slug: "wall-e-autonomy",
+  title: "WALL-E — Autonomous Tank Robot",
+  subtitle:
+    "Full-stack mobile robot: ROS2 nav stack, SLAM, natural-language control, and simulation-based RL in progress",
+  year: "2026–",
+  tier: 1,
+
+  tags: [
+    "ROS2 (Jazzy)",
+    "C++",
+    "Python",
+    "SLAM",
+    "RTAB-Map",
+    "Nav2",
+    "YOLO",
+    "LLM / Ollama",
+    "Isaac Sim",
+    "Isaac Lab",
+    "Reinforcement Learning",
+  ],
+
+  hero: "/projects/wall-e/hardware.jpeg",
+
+  links: {
+    github: "https://github.com/wukongxzero/WALL_E",
+    video: "",
+  },
+
+  robotName: "WALL-E",
+
+  role: "Software Developer (ROS2 autonomy, SLAM/navigation, teleop, and simulation)",
+
+  systemOverview:
+    "WALL-E is a multi-person autonomous tank-tracked robot project; my work is entirely on the software side: the ROS2 navigation stack (SLAM via RTAB-Map, Nav2 for planning), a browser-based teleop UI over WebSockets, YOLO-based visual obstacle detection, and a local LLM (LLaMA 3.2 via Ollama) natural-language control layer that replaced joystick teleop as the default interface. Currently porting the software stack into NVIDIA Isaac Sim/Isaac Lab to train a navigation policy via reinforcement learning.",
+
+  problem:
+    "Build the full software stack for an autonomous mobile robot — mapping, localization, and navigation of a real environment — then extend it with perception and natural-language control, and finally a learned navigation policy trained in simulation.",
+
+  approach: [
+    "Built a browser-based teleop web UI communicating over a custom WebSocket gateway and tank-status serial protocol.",
+    "Implemented SLAM with RTAB-Map fused with a RealSense D435 depth camera, validated in both Gazebo and Isaac Sim.",
+    "Integrated the ROS2 Nav2 stack (AMCL, costmaps, planners) for autonomous goal navigation, with a safety architecture that routes sensor dropout, localization failure, and serial timeout faults through a state machine to a safe IDLE state.",
+    "Added YOLO-based visual obstacle detection feeding navigation decisions.",
+    "Replaced joystick teleop with llama_interpreter_node — a local LLaMA 3.2 (via Ollama) natural-language interpreter that turns spoken/typed commands into Nav2 goals, now the default control interface.",
+    "Currently porting the full robot + ROS2 bridge into NVIDIA Isaac Sim, building an Isaac Lab RL environment (observation space, reward, PPO) to train a learned navigation policy.",
+  ],
+
+  decisions: [
+    {
+      title: "Natural-language control over joystick",
+      detail:
+        "Joystick teleop created friction for anyone commanding the robot, not just me. Built an LLM-based interpreter instead of living with it — it's now the primary control interface, not a demo trick.",
+    },
+    {
+      title: "Direct body-velocity control as a Gazebo/Isaac Sim workaround",
+      detail:
+        "The URDF-to-USD conversion pipeline lost the track cylinders' correct orientation, so joint-level drive torque couldn't produce real traction in simulation. Diagnosed the root cause and worked around it with direct body-velocity control (matching what Gazebo's diff-drive plugin does under the hood) rather than blocking on a full remodel.",
+    },
+    {
+      title: "State-machine-gated safety architecture",
+      detail:
+        "Sensor dropout, localization failure, and serial timeouts all route through a single state machine to a safe IDLE state, rather than being handled ad hoc in each node.",
+    },
+  ],
+
+  ownership: [
+    "Full ROS2 autonomy stack: SLAM, Nav2 integration, safety state machine",
+    "Browser-based teleop UI and WebSocket/serial communication protocol",
+    "YOLO perception integration and LLM-based natural-language control layer",
+    "Ongoing: Isaac Sim/Isaac Lab port and RL navigation policy training",
+  ],
+
+  results: [
+    "Autonomous goal navigation validated end-to-end in both Gazebo and Isaac Sim.",
+    "SLAM map-building confirmed with a real depth-camera feed inside Isaac Sim.",
+    "Natural-language control adopted as the default operator interface, replacing joystick teleop entirely.",
+    "Isaac Sim physics/drive validated (straight-line accuracy within centimeters over multi-meter runs); RL navigation training is in progress.",
+  ],
+
+  bullets: [
+    "Built the full ROS2 software stack for a multi-person autonomous tank robot project",
+    "SLAM (RTAB-Map) + Nav2 autonomous navigation, validated in Gazebo and Isaac Sim",
+    "Local LLM (LLaMA 3.2) natural-language control replacing joystick teleop as the default interface",
+    "Porting into NVIDIA Isaac Sim/Isaac Lab to train a reinforcement-learning navigation policy",
+  ],
+
+  gallery: [
+    {
+      title: "WALL-E Hardware",
+      src: "/projects/wall-e/hardware.jpeg",
+      caption: "The physical robot — 3D-printed tank-tracked chassis and pan/tilt head.",
+    },
+    {
+      title: "Browser Teleop UI",
+      src: "/projects/wall-e/webui-teleop.jpeg",
+      caption: "Debug view of the browser-based teleop web UI over the tank-status protocol.",
+    },
+    {
+      title: "System Architecture Sketch",
+      src: "/projects/wall-e/architecture-sketch.jpeg",
+      caption: "Early architecture sketch: browser, ROS2 cluster, and LLM interface communicating over WebSockets.",
+    },
+  ],
+},
 
   // =========================
   // SELECTED (Tier 2)
