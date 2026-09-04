@@ -162,7 +162,7 @@ export const projects = [
   slug: "wall-e-autonomy",
   title: "WALL-E — Autonomous Tank Robot",
   subtitle:
-    "Full-stack mobile robot: ROS2 nav stack, SLAM, natural-language control, and simulation-based RL in progress",
+    "Full-stack mobile robot: ROS2 nav stack, SLAM, natural-language control, and a working Isaac Lab RL training pipeline",
   year: "2026–",
   tier: 1,
 
@@ -178,6 +178,8 @@ export const projects = [
     "Isaac Sim",
     "Isaac Lab",
     "Reinforcement Learning",
+    "skrl",
+    "PPO/TD3",
   ],
 
   hero: "/projects/wall-e/hardware.jpeg",
@@ -192,7 +194,7 @@ export const projects = [
   role: "Software Developer (ROS2 autonomy, SLAM/navigation, teleop, and simulation)",
 
   systemOverview:
-    "WALL-E is a multi-person autonomous tank-tracked robot project; my work is entirely on the software side: the ROS2 navigation stack (SLAM via RTAB-Map, Nav2 for planning), a browser-based teleop UI over WebSockets, YOLO-based visual obstacle detection, and a local LLM (LLaMA 3.2 via Ollama) natural-language control layer that replaced joystick teleop as the default interface. Currently porting the software stack into NVIDIA Isaac Sim/Isaac Lab to train a navigation policy via reinforcement learning.",
+    "WALL-E is a multi-person autonomous tank-tracked robot project; my work is entirely on the software side: the ROS2 navigation stack (SLAM via RTAB-Map, Nav2 for planning), a browser-based teleop UI over WebSockets, YOLO-based visual obstacle detection, and a local LLM (LLaMA 3.2 via Ollama) natural-language control layer that replaced joystick teleop as the default interface. Ported the software stack into NVIDIA Isaac Sim/Isaac Lab and built a working skrl-based RL training pipeline (PPO/TD3) to train a navigation policy.",
 
   problem:
     "Build the full software stack for an autonomous mobile robot — mapping, localization, and navigation of a real environment — then extend it with perception and natural-language control, and finally a learned navigation policy trained in simulation.",
@@ -203,7 +205,7 @@ export const projects = [
     "Integrated the ROS2 Nav2 stack (AMCL, costmaps, planners) for autonomous goal navigation, with a safety architecture that routes sensor dropout, localization failure, and serial timeout faults through a state machine to a safe IDLE state.",
     "Added YOLO-based visual obstacle detection feeding navigation decisions.",
     "Replaced joystick teleop with llama_interpreter_node — a local LLaMA 3.2 (via Ollama) natural-language interpreter that turns spoken/typed commands into Nav2 goals, now the default control interface.",
-    "Currently porting the full robot + ROS2 bridge into NVIDIA Isaac Sim, building an Isaac Lab RL environment (observation space, reward, PPO) to train a learned navigation policy.",
+    "Ported the full robot + ROS2 bridge into NVIDIA Isaac Sim and built an Isaac Lab RL environment (shared base env/scene config classes, per-robot specialization) with a working skrl-based training loop supporting both PPO and TD3, selectable at the command line.",
   ],
 
   decisions: [
@@ -222,6 +224,11 @@ export const projects = [
       detail:
         "Sensor dropout, localization failure, and serial timeouts all route through a single state machine to a safe IDLE state, rather than being handled ad hoc in each node.",
     },
+    {
+      title: "Physics-fidelity debugging in the RL training environment",
+      detail:
+        "Found and fixed a spawn-height double-count (URDF's baked-in offset plus the environment config's own offset stacked, causing the robot to spawn floating with tracks losing ground contact) and an effort_limit_sim value left over from raw-USD tuning that let the velocity servo exceed real torque limits and slip tracks in place. Root-caused both by comparing against a working reference config rather than guessing at physics parameters.",
+    },
   ],
 
   ownership: [
@@ -235,7 +242,7 @@ export const projects = [
     "Autonomous goal navigation validated end-to-end in both Gazebo and Isaac Sim.",
     "SLAM map-building confirmed with a real depth-camera feed inside Isaac Sim.",
     "Natural-language control adopted as the default operator interface, replacing joystick teleop entirely.",
-    "Isaac Sim physics/drive validated (straight-line accuracy within centimeters over multi-meter runs); RL navigation training is in progress.",
+    "Isaac Sim physics/drive validated (straight-line accuracy within centimeters over multi-meter runs); working skrl PPO/TD3 training pipeline built and validated end-to-end (real training loop, policy updates confirmed executing) in Isaac Lab.",
   ],
 
   bullets: [
