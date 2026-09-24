@@ -342,6 +342,7 @@ export const projects = [
   { src: "/projects/baja/Tigwelding.jpg" },
   { src: "/projects/baja/Teamworkingonthebuggy.jpeg" },
   { src: "/projects/baja/Teampicture.png" },
+  { src: "/projects/baja/Teampicture2.png" },
   { src: "/projects/baja/Teamgoingtotheeventsite.png" },
 
   { src: "/projects/baja/Eventpits.jpeg" },
